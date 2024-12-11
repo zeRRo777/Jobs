@@ -77,15 +77,6 @@
     <footer class="bg-gray-800 text-gray-400 p-4 text-center">
         &copy; 2023 Моя Платформа. Все права защищены. Лицензия XYZ.
     </footer>
-
-    <script>
-        // Скрипт для открытия и закрытия мобильного меню
-
-        document.getElementById('nav-toggle').addEventListener('click', function() {
-            var navContent = document.getElementById('nav-content');
-            navContent.classList.toggle('hidden');
-        });
-    </script>
 </body>
 
 </html>

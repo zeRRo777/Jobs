@@ -20,7 +20,7 @@
     @endif
 
     <!-- Основной контент -->
-    <main class="container mx-auto px-4 flex-grow">
+    <main class="container mx-auto px-4 flex-grow mb-10">
         {{ $slot }}
     </main>
 
