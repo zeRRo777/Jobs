@@ -6,5 +6,12 @@
     </div>
 
     <!-- Меню -->
-    <x-menu.menu />
+    <x-menu.menu>
+        <x-slot:menu>
+            {{ $menu }}
+        </x-slot:menu>
+        <x-slot:navigate_buttons>
+            {{ $navigate_buttons }}
+        </x-slot:navigate_buttons>
+    </x-menu.menu>
 </nav>

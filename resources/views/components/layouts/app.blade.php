@@ -10,7 +10,15 @@
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
     <!-- Навигационная панель -->
-    <x-nav />
+    <x-nav>
+        <x-slot:menu>
+            {{ $menu }}
+        </x-slot:menu>
+        <x-slot:navigate_buttons>
+            {{ $navigate_buttons }}
+        </x-slot:navigate_buttons>
+    </x-nav>
+
 
     <!-- Заголовок страницы -->
     @if (!empty($header))

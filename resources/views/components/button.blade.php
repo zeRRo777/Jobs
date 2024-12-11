@@ -1,12 +1,12 @@
-@props(['_type' => 'link'])
+@props(['type_component' => 'link'])
 
-@if ($_type == 'link')
+@if ($type_component == 'link')
 <a
     {{ $attributes->merge(['class' => "border rounded text-white border-white hover:border-transparent hover:text-gray-900 hover:bg-white"]) }}>
     {{ $slot }}
 </a>
 
-@elseif($_type == 'button')
+@elseif($type_component == 'button')
 <button
     {{ $attributes->merge(['class' => "border rounded text-white border-white hover:border-transparent hover:text-gray-900 hover:bg-white"]) }}>
     {{ $slot }}
