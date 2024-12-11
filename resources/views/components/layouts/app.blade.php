@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     @vite(['resources/css/app.css'])
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
     <title>{{ $title ?? 'Платформа для просмотра и управления вакансиями' }}</title>
 </head>
 
