@@ -9,3 +9,5 @@ Route::view('/login', 'pages.auth.login')->name('login');
 Route::view('/register', 'pages.auth.register')->name('register');
 
 Route::view('/admin/register', 'pages.auth.admin.register')->name('admin.register');
+
+Route::view('/about', 'pages.about')->name('about');

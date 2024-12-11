@@ -7,11 +7,10 @@
 
     <!-- Меню -->
     <x-menu.menu>
-        <x-slot:menu>
-            {{ $menu }}
-        </x-slot:menu>
+        @if (!empty($navigate_buttons))
         <x-slot:navigate_buttons>
             {{ $navigate_buttons }}
         </x-slot:navigate_buttons>
+        @endif
     </x-menu.menu>
 </nav>

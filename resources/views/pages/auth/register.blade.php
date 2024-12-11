@@ -1,11 +1,5 @@
 <x-layouts.app>
     <x-slot:title>Регистрация</x-slot:title>
-    <x-slot:menu>
-        <x-menu.link href="#">Пункт 1</x-menu.link>
-        <x-menu.link href="#">Пункт 2</x-menu.link>
-        <x-menu.link href="#">Пункт 3</x-menu.link>
-        <x-menu.link href="#">Пункт 4</x-menu.link>
-    </x-slot:menu>
     <x-slot:navigate_buttons>
         <x-button class="text-sm px-4 py-2" :href="route('admin.register')" type_component="link">Регистрация для админа</x-button>
         <x-button class="text-sm px-4 py-2" :href="route('login')" type_component="link">Войти</x-button>

@@ -11,12 +11,11 @@
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
     <!-- Навигационная панель -->
     <x-nav>
-        <x-slot:menu>
-            {{ $menu }}
-        </x-slot:menu>
+        @if (!empty($navigate_buttons))
         <x-slot:navigate_buttons>
             {{ $navigate_buttons }}
         </x-slot:navigate_buttons>
+        @endif
     </x-nav>
 
 
