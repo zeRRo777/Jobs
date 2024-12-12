@@ -1,17 +1,13 @@
 <x-layouts.app>
-    <x-slot:title>Все вакансии</x-slot:title>
+    <x-slot:title>Вакансии</x-slot:title>
     <x-slot:header>Все вакансии</x-slot:header>
 
     <x-form.form size="">
         <div class="flex space-x-2">
-            <x-form.input type="text" name="q" placeholder="Введите запрос..." />
+            <x-form.input type="text" name="q" placeholder="Введите город, профессию, тег или компанию и мы постараемся найти вакансии" />
             <x-button class="text-sm px-4 py-2" type="submit" type_component="button">Найти</x-button>
         </div>
     </x-form.form>
-
-    <!-- <div class="mt-4">
-        <x-button class="text-sm px-4 py-2" type_component="button">Открыть умный фильтр</x-button>
-    </div> -->
 
     <!-- Контейнер для фильтра и карточек вакансий -->
     <div class="flex flex-col lg:flex-row lg:space-x-8 mt-5">
@@ -48,9 +44,7 @@
 
                 <!-- Кнопка применить фильтр -->
                 <div class="mt-6">
-                    <button type="submit" class="w-full text-center text-sm px-4 py-2 border rounded text-white border-white hover:border-transparent hover:text-gray-900 hover:bg-white">
-                        Применить фильтр
-                    </button>
+                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Применить фильтр</x-button>
                 </div>
             </x-form.form>
         </div>
