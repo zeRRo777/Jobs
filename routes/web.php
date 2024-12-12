@@ -11,3 +11,5 @@ Route::view('/register', 'pages.auth.register')->name('register');
 Route::view('/admin/register', 'pages.auth.admin.register')->name('admin.register');
 
 Route::view('/about', 'pages.about')->name('about');
+
+Route::view('/vacancies', 'pages.vacancy.index')->name('vacancies');

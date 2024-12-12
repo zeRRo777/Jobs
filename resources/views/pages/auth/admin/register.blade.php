@@ -8,41 +8,27 @@
 
     <x-form.form action="" method="POST">
         @csrf
-        <div>
-            <x-form.label for="name">
-                Имя
-            </x-form.label>
-            <x-form.input type="text" id="name" name="name" placeholder="Введите име" value="{{ old('name') }}" />
+        <x-form.input-group label="Имя">
+            <x-form.input type="text" name="name" placeholder="Введите имя" value="{{ old('name') }}" />
             <x-form.error>name</x-form.error>
-        </div>
+        </x-form.input-group>
 
-        <div>
-            <x-form.label for="email">
-                Почта
-            </x-form.label>
-            <x-form.input type="email" id="email" name="email" placeholder="Введите почту" value="{{ old('email') }}" />
+        <x-form.input-group label="Почта">
+            <x-form.input type="email" name="email" placeholder="Введите почту" value="{{ old('email') }}" />
             <x-form.error>email</x-form.error>
-        </div>
+        </x-form.input-group>
 
-        <div>
-            <x-form.label for="company">
-                Название компании или код(если хотите присоединиться к существующей компании)
-            </x-form.label>
-            <x-form.input type="text" id="company" name="company" placeholder="Введите навзание компании или код" value="{{ old('company') }}" />
+        <x-form.input-group label="Название компании или код(если хотите присоединиться к существующей компании)">
+            <x-form.input type="text" name="company" placeholder="Введите почту" value="{{ old('email') }}" />
+            <x-form.error>email</x-form.error>
+        </x-form.input-group>
+
+        <x-form.input-group label="Пароль">
+            <x-form.input type="password" name="password" placeholder="Введите навзание компании или код" value="{{ old('company') }}" />
             <x-form.error>company</x-form.error>
-        </div>
+        </x-form.input-group>
 
-        <div>
-            <x-form.label for="password">
-                Пароль
-            </x-form.label>
-            <x-form.input type="email" id="email" name="email" placeholder="Введите пароль" value="{{ old('password') }}" />
-            <x-form.error>password</x-form.error>
-        </div>
-        <div>
-            <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Зарегистрироваться</x-button>
-        </div>
-
+        <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Зарегистрироваться</x-button>
     </x-form.form>
 
 </x-layouts.app>

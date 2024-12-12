@@ -4,8 +4,7 @@
     <div class="text-lg lg:flex-grow">
         <x-menu.link :href="route('main')">Главная</x-menu.link>
         <x-menu.link :href="route('about')">О нас</x-menu.link>
-
-        <x-menu.link href="#">Все вакансии</x-menu.link>
+        <x-menu.link :href="route('vacancies')">Все вакансии</x-menu.link>
     </div>
 
     <div class="flex items-center space-x-4 mt-4 lg:mt-0">
