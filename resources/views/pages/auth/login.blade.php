@@ -5,7 +5,7 @@
     </x-slot:navigate_buttons>
     <x-slot:header>Авторизация</x-slot:header>
 
-    <x-form.form action="" method="POST">
+    <x-form.form action="" method="POST" class="mx-auto">
         @csrf
         <x-form.input-group label="Почта">
             <x-form.input type="email" name="email" placeholder="Введите почту" value="{{ old('email') }}" />

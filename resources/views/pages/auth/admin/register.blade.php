@@ -6,7 +6,7 @@
     </x-slot:navigate_buttons>
     <x-slot:header>Регистрация для админов</x-slot:header>
 
-    <x-form.form action="" method="POST">
+    <x-form.form action="" method="POST" class="mx-auto">
         @csrf
         <x-form.input-group label="Имя">
             <x-form.input type="text" name="name" placeholder="Введите имя" value="{{ old('name') }}" />
@@ -19,7 +19,7 @@
         </x-form.input-group>
 
         <x-form.input-group label="Название компании или код(если хотите присоединиться к существующей компании)">
-            <x-form.input type="text" name="company" placeholder="Введите почту" value="{{ old('email') }}" />
+            <x-form.input type="text" name="company" placeholder="Введите код или название компании" value="{{ old('email') }}" />
             <x-form.error>email</x-form.error>
         </x-form.input-group>
 

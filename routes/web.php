@@ -17,3 +17,9 @@ Route::view('/vacancies', 'pages.vacancy.index')->name('vacancies');
 Route::view('/companies', 'pages.company.index')->name('companies');
 
 Route::view('/companies/1', 'pages.company.show')->name('company.show');
+
+Route::view('/vacancies/likes/1', 'pages.vacancy.like')->name('vacancy.like');
+
+Route::view('/vacancies/1', 'pages.vacancy.show')->name('vacancy.show');
+
+Route::view('/profile/1', 'pages.profile')->name('profile');

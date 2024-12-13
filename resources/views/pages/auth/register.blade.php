@@ -6,7 +6,7 @@
     </x-slot:navigate_buttons>
     <x-slot:header>Регистрация</x-slot:header>
 
-    <x-form.form action="" method="POST">
+    <x-form.form action="" method="POST" class="mx-auto">
         @csrf
         <x-form.input-group label="Имя">
             <x-form.input type="text" name="name" placeholder="Введите имя" value="{{ old('name') }}" />
