@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->text('resume')->nullable();
             $table->integer('type');
-            $table->foreignIdFor(Company::class);
+            $table->foreignIdFor(Company::class)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
