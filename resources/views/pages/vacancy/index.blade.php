@@ -16,29 +16,30 @@
 
             <x-form.form method="GET" action="" size="">
                 <x-html.h3>Умный фильтр</x-html.h3>
-                <!-- Фильтр по городу -->
-                <x-form.filter-select
-                    label="Города"
-                    name="cities"
-                    :data="$cities" />
 
-                <!-- Фильтр по профессии -->
-                <x-form.filter-select
-                    label="Профессии"
-                    name="professions"
-                    :data="$professions" />
+                @livewire('multiple-select', [
+                'label' => 'Города',
+                'name' => 'cities',
+                'data' => $cities,
+                ])
 
-                <!-- Фильтр по тегу -->
-                <x-form.filter-select
-                    label="Теги"
-                    name="tags"
-                    :data="$tags" />
+                @livewire('multiple-select', [
+                'label' => 'Профессии',
+                'name' => 'professions',
+                'data' => $professions,
+                ])
 
-                <!-- Фильтр по компании -->
-                <x-form.filter-select
-                    label="Компании"
-                    name="companies"
-                    :data="$companies" />
+                @livewire('multiple-select', [
+                'label' => 'Теги',
+                'name' => 'tags',
+                'data' => $tags,
+                ])
+
+                @livewire('multiple-select', [
+                'label' => 'Компании',
+                'name' => 'companies',
+                'data' => $companies,
+                ])
 
                 <!-- Фильтр по зарплате -->
                 <div class="flex flex-row lg:flex-col xl:flex-row space-x-4 lg:space-x-0 lg:space-y-4 xl:space-y-0 xl:space-x-4">
