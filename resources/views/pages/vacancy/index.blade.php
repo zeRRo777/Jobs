@@ -4,7 +4,7 @@
 
     <x-form.form size="">
         <div class="flex space-x-2">
-            <x-form.input type="text" name="q" placeholder="Введите город, профессию, тег или компанию и мы постараемся найти вакансии" />
+            <x-form.input type="text" name="q" placeholder="Введите город, профессию или компанию и мы постараемся найти вакансии" />
             <x-button class="text-sm px-4 py-2" type="submit" type_component="button">Найти</x-button>
         </div>
     </x-form.form>
@@ -17,16 +17,28 @@
             <x-form.form method="GET" action="" size="">
                 <x-html.h3>Умный фильтр</x-html.h3>
                 <!-- Фильтр по городу -->
-                <x-form.filter-select label="Город" name="city" :options="['Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск','Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск','Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск','Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск']" />
+                <x-form.filter-select
+                    label="Города"
+                    name="cities"
+                    :data="$cities" />
 
                 <!-- Фильтр по профессии -->
-                <x-form.filter-select label="Профессия" name="profession" :options="['Программист', 'Дизайнер', 'Менеджер', 'Аналитик']" />
+                <x-form.filter-select
+                    label="Профессии"
+                    name="professions"
+                    :data="$professions" />
 
                 <!-- Фильтр по тегу -->
-                <x-form.filter-select label="Тег" name="tag" :options="['PHP', 'Laravel', 'Vue.js', 'JavaScript']" />
+                <x-form.filter-select
+                    label="Теги"
+                    name="tags"
+                    :data="$tags" />
 
                 <!-- Фильтр по компании -->
-                <x-form.filter-select label="Компания" name="company" :options="['Компания А', 'Компания Б', 'Компания В', 'Компания Г']" />
+                <x-form.filter-select
+                    label="Компании"
+                    name="companies"
+                    :data="$companies" />
 
                 <!-- Фильтр по зарплате -->
                 <div class="flex flex-row lg:flex-col xl:flex-row space-x-4 lg:space-x-0 lg:space-y-4 xl:space-y-0 xl:space-x-4">
@@ -51,12 +63,12 @@
 
         <!-- Карточки вакансий -->
         <div class="w-full lg:w-3/4">
-            <x-vacancy.list>
-                <x-vacancy.card vacancy="gg" />
-                <x-vacancy.card vacancy="gg" />
-                <x-vacancy.card vacancy="gg" />
-                <x-vacancy.card vacancy="gg" />
+            <x-vacancy.list class="mb-5">
+                @foreach ($vacancies as $vacancy)
+                <x-vacancy.card :vacancy="$vacancy" />
+                @endforeach
             </x-vacancy.list>
+            {{ $vacancies->links() }}
         </div>
     </div>
 

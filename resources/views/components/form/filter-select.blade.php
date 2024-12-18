@@ -1,14 +1,15 @@
-@props(['label', 'options' => [], 'name' => ''])
+@props(['label', 'data' => [], 'name' => ''])
+
 
 <div class="mb-6">
     <x-form.input-group :label="$label">
         <x-form.input type="text" placeholder="Поиск..." class="mb-2" />
         <div class="mt-2 max-h-40 overflow-y-auto bg-gray-700 rounded-md p-2">
-            @foreach($options as $option)
+            @foreach($data as $key => $value)
             <div class="option-item">
                 <label class="inline-flex items-center">
-                    <input type="checkbox" name="{{ $name }}[]" value="{{ $option }}" class="form-checkbox text-indigo-600">
-                    <span class="ml-2 text-gray-200">{{ $option }}</span>
+                    <input type="checkbox" name="{{ $name }}[]" value="{{ $key }}" class="form-checkbox text-indigo-600">
+                    <span class="ml-2 text-gray-200">{{ $value }}</span>
                 </label>
             </div>
             @endforeach
