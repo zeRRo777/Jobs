@@ -11,8 +11,6 @@ class MultipleSelect extends Component
     public array $data = [];
     public $query = '';
 
-
-
     public function mount($label, $name, $data = [])
     {
         $this->label = $label;
@@ -24,7 +22,7 @@ class MultipleSelect extends Component
     {
         $filteredData = $this->query
             ? collect($this->data)->filter(function ($value) {
-                return stripos(mb_strtolower($value), mb_strtolower($this->query)) !== false;
+                return stripos(mb_strtolower($value['name']), mb_strtolower($this->query)) !== false;
             })
             : $this->data;
 

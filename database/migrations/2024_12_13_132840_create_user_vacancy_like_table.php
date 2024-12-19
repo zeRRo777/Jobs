@@ -14,10 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_vacancy_likes', function (Blueprint $table) {
-            $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Vacancy::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->primary(['user_id', 'vacancy_id']);
         });
     }
 

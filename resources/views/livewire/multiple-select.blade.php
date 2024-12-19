@@ -8,8 +8,15 @@
                 @foreach($filteredData as $key => $value)
                 <div wire:key="{{ $key }}" class="option-item">
                     <label class="inline-flex items-center">
-                        <input type="checkbox" name="{{ $name }}[]" value="{{ $key }}" class="form-checkbox text-indigo-600">
-                        <span class="ml-2 text-gray-200">{{ $value }}</span>
+                        <input
+                            type="checkbox"
+                            name="{{ $name }}[]"
+                            value="{{ $key }}"
+                            class="form-checkbox text-indigo-600"
+                            @if ($value['active'])
+                            checked
+                            @endif>
+                        <span class="ml-2 text-gray-200">{{ $value['name'] }}</span>
                     </label>
                 </div>
                 @endforeach
