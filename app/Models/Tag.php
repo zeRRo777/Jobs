@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
@@ -11,7 +12,7 @@ class Tag extends Model
 
     protected $guarded = [];
 
-    public function vacancies()
+    public function vacancies(): BelongsToMany
     {
         return $this->belongsToMany(Vacancy::class, 'vacancy_tag');
     }

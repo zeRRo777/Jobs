@@ -2,13 +2,6 @@
     <x-slot:title>Вакансии</x-slot:title>
     <x-slot:header>Все вакансии</x-slot:header>
 
-    <x-form.form method="GET" action="{{ route('vacancies') }}" size="">
-        <div class="flex space-x-2">
-            <x-form.input type="text" name="search" placeholder="Введите город, профессию или компанию и мы постараемся найти вакансии" />
-            <x-button class="text-sm px-4 py-2" type="submit" type_component="button">Найти</x-button>
-        </div>
-    </x-form.form>
-
     <!-- Контейнер для фильтра и карточек вакансий -->
     <div class="flex flex-col lg:flex-row lg:space-x-8 mt-5">
         <!-- Фильтр -->
@@ -16,6 +9,8 @@
 
             <x-form.form method="GET" action="{{ route('vacancies') }}" size="">
                 <x-html.h3>Умный фильтр</x-html.h3>
+
+                <x-form.errors />
 
                 @livewire('multiple-select', [
                 'label' => 'Города',
@@ -67,12 +62,16 @@
 
         <!-- Карточки вакансий -->
         <div class="w-full lg:w-3/4">
+            @if ($vacancies->count() > 0)
             <x-vacancy.list class="mb-5">
                 @foreach ($vacancies as $vacancy)
                 <x-vacancy.card :vacancy="$vacancy" />
                 @endforeach
             </x-vacancy.list>
             {{ $vacancies->links() }}
+            @else
+            <x-html.h2>Вакансий не найдено</x-html.h2>
+            @endif
         </div>
     </div>
 

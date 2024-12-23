@@ -9,7 +9,6 @@
             </div>
             @endif
             @if(!empty($company->photo))
-            <!-- Логотип компании -->
             <img src="{{ $company->photo }}" alt="Логотип компании А" class="h-16 w-16">
             @endif
         </div>

@@ -11,7 +11,7 @@
                         <input
                             type="checkbox"
                             name="{{ $name }}[]"
-                            value="{{ $key }}"
+                            value="{{ $value['id'] }}"
                             class="form-checkbox text-indigo-600"
                             @if ($value['active'])
                             checked
