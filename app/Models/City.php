@@ -11,7 +11,7 @@ class City extends Model
 {
     use HasFactory;
 
-    protected array $guarded = [];
+    protected $guarded = [];
 
     public function companies(): BelongsToMany
     {
