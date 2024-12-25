@@ -18,7 +18,7 @@
         <x-button class="text-sm px-4 py-2" :href="route('register')" type_component="link">Зарегистрироваться</x-button>
         @endguest
         @auth
-        <x-button class="text-sm px-4 py-2" :href="route('profile')" type_component="link">Профиль</x-button>
+        <x-button class="text-sm px-4 py-2" :href="route('profile', Auth::user()->id)" type_component="link">Профиль</x-button>
         @endauth
         @endif
     </div>

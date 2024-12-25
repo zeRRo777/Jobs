@@ -32,36 +32,36 @@
 
         <x-form.input-group label="Название вакансии">
             <x-form.input type="text" name="name" placeholder="Название вакансии" value="Программист разработчик" />
-            <x-form.error>name</x-form.error>
+            <x-form.error field="name" />
         </x-form.input-group>
 
         <x-form.input-group label="Описание вакансии">
             <x-form.textarea name="description" placeholder="Описание вакансии">
                 Информация о компании A. Это описание компании,которое может быть длинным, но мы ограничиваем его до трех строк текста, чтобы карточка сохраняла аккуратный вид и не занимала слишком много места на странице.
             </x-form.textarea>
-            <x-form.error>description</x-form.error>
+            <x-form.error field="description" />
         </x-form.input-group>
 
         <x-form.input-group label="Город">
             <x-form.input type="text" name="city" placeholder="Название городов" value="Ковров" />
-            <x-form.error>city</x-form.error>
+            <x-form.error field="city" />
         </x-form.input-group>
 
         <x-form.input-group label="Название компании">
             <x-form.input type="text" name="company" placeholder="Название компании" value="ЭлРос" />
-            <x-form.error>company</x-form.error>
+            <x-form.error field="company" />
         </x-form.input-group>
 
         <x-form.input-group label="Описание компании">
             <x-form.textarea name="description_company" placeholder="Описание компании">
                 Информация о компании A. Это описание компании,которое может быть длинным, но мы ограничиваем его до трех строк текста, чтобы карточка сохраняла аккуратный вид и не занимала слишком много места на странице.
             </x-form.textarea>
-            <x-form.error>description</x-form.error>
+            <x-form.error field="description" />
         </x-form.input-group>
 
         <x-form.input-group label="Загрузить файл">
             <x-form.input type="file" name="file" />
-            <x-form.error>file</x-form.error>
+            <x-form.error field="file" />
         </x-form.input-group>
 
         <div class="mt-6">

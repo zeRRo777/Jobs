@@ -55,28 +55,28 @@
 
         <x-form.input-group label="Имя">
             <x-form.input type="text" name="name" placeholder="Введите имя" value="Name" />
-            <x-form.error>name</x-form.error>
+            <x-form.error field="name" />
         </x-form.input-group>
 
         <x-form.input-group label="Почта">
             <x-form.input type="text" name="email" placeholder="Введите почту" value="test@email.com" />
-            <x-form.error>email</x-form.error>
+            <x-form.error field="email" />
         </x-form.input-group>
 
         <x-form.input-group label="Профессия">
             <x-form.input type="text" name="profession" placeholder="Введите профессию" value="Программист-разработчик" />
-            <x-form.error>profession</x-form.error>
+            <x-form.error field="profession" />
         </x-form.input-group>
 
         <x-form.input-group label="Город(можете написать несколько городов через запятую)">
             <x-form.input type="text" name="city" placeholder="Введите название города" value="Москва" />
-            <x-form.error>city</x-form.error>
+            <x-form.error field="city" />
         </x-form.input-group>
 
 
         <x-form.input-group label="Город(вы можете написать несколько городов через заяпятую)">
             <x-form.input type="text" name="city" placeholder="Название городов" value="Ковров, Владимир" />
-            <x-form.error>city</x-form.error>
+            <x-form.error field="city" />
         </x-form.input-group>
 
         <x-form.input-group label="Резюме">
@@ -106,12 +106,12 @@
 
                 Личные качества: Ответственность, коммуникабельность, стремление к саморазвитию.
             </x-form.textarea>
-            <x-form.error>desription</x-form.error>
+            <x-form.error field="desription" />
         </x-form.input-group>
 
         <x-form.input-group label="Загрузите фотографию">
             <x-form.input type="file" name="file" />
-            <x-form.error>file</x-form.error>
+            <x-form.error field="file" />
         </x-form.input-group>
 
         <div class="mt-6">
@@ -125,12 +125,12 @@
             <x-html.h3 class="mb-4">Смена пароля</x-html.h3>
             <x-form.input-group label="Текущий пароль">
                 <x-form.input type="password" name="current_password" placeholder="Введите текущий пароль" value="" />
-                <x-form.error>current_password</x-form.error>
+                <x-form.error field="current_password" />
             </x-form.input-group>
 
             <x-form.input-group label="Новый пароль">
                 <x-form.input type="password" name="new_password" placeholder="Введите новый пароль" value="" />
-                <x-form.error>new_password</x-form.error>
+                <x-form.error field="new_password"></x-form.error>
             </x-form.input-group>
 
             <div class="mt-6">
@@ -146,7 +146,7 @@
 
             <x-form.input-group label="Сгенерированный код">
                 <x-form.input type="text" name="secret_code" value="fdhdhfhdfhdshfi8976548973jvhjciuh" disabled />
-                <x-form.error>new_password</x-form.error>
+                <x-form.error field="new_password" />
             </x-form.input-group>
 
             <div class="mt-6">
@@ -155,11 +155,25 @@
         </x-form.form>
     </div>
 
-    <x-form.form class="mb-10">
-        <x-html.h3 class="mb-4">Удаление аккаунта</x-html.h3>
 
-        <div class="mt-6">
-            <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
-        </div>
-    </x-form.form>
+
+
+    <div class="flex flex-col md:flex-row gap-6">
+        <x-form.form class="mb-10" size="w-full" method="POST" action="{{ route('logout') }}">
+            @csrf
+            @method('DELETE')
+            <x-html.h3 class="mb-4">Выйти из аккаунта</x-html.h3>
+            <div class="mt-6">
+                <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Выйти</x-button>
+            </div>
+        </x-form.form>
+        <x-form.form class="mb-10" size="w-full">
+            <x-html.h3 class="mb-4">Удаление аккаунта</x-html.h3>
+
+            <div class="mt-6">
+                <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
+            </div>
+        </x-form.form>
+    </div>
+
 </x-layouts.app>

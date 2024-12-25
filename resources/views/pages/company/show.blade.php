@@ -29,24 +29,24 @@
 
         <x-form.input-group label="Название">
             <x-form.input type="text" name="company" placeholder="Название компании" value="Название" />
-            <x-form.error>company</x-form.error>
+            <x-form.error field="company" />
         </x-form.input-group>
 
         <x-form.input-group label="Город(вы можете написать несколько городов через заяпятую)">
             <x-form.input type="text" name="city" placeholder="Название городов" value="Ковров, Владимир" />
-            <x-form.error>city</x-form.error>
+            <x-form.error field="city" />
         </x-form.input-group>
 
         <x-form.input-group label="Информация о компании">
             <x-form.textarea name="about" placeholder="Информация о компании">
                 Информация о компании A. Это описание компании,которое может быть длинным, но мы ограничиваем его до трех строк текста, чтобы карточка сохраняла аккуратный вид и не занимала слишком много места на странице.
             </x-form.textarea>
-            <x-form.error>about</x-form.error>
+            <x-form.error field="about" />
         </x-form.input-group>
 
         <x-form.input-group label="Загрузить файл">
             <x-form.input type="file" name="file" />
-            <x-form.error>file</x-form.error>
+            <x-form.error field="file" />
         </x-form.input-group>
 
         <div class="mt-6">
