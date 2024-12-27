@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     @vite(['resources/css/app.css'])
+    @livewireStyles
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
     <title>{{ $title ?? 'Платформа для просмотра и управления вакансиями' }}</title>
 </head>
@@ -32,7 +33,10 @@
     </main>
 
     <!-- Футер -->
+    @persist('footer')
     <x-footer>2024 Платформа для просмотра и управления вакансиями. Все права защищены. Лицензия Test.</x-footer>
+    @endpersist
 </body>
+@livewireScripts
 
 </html>

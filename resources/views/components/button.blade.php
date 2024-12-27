@@ -3,6 +3,7 @@
 @if ($type_component == 'link')
 
 <a
+    wire:navigate
     {{ $attributes->merge(['class' => "border rounded text-white border-white hover:border-transparent hover:text-gray-900 hover:bg-white"]) }}>
     {{ $slot }}
 </a>

@@ -2,11 +2,11 @@
 <div id="nav-content" class="w-full flex-grow lg:flex lg:items-center lg:w-auto">
 
     <div class="text-lg lg:flex-grow">
-        <x-menu.link page="/" :href="route('main')">Главная</x-menu.link>
-        <x-menu.link page="about" :href="route('about')">О нас</x-menu.link>
-        <x-menu.link page="vacancies" :href="route('vacancies')">Вакансии</x-menu.link>
-        <x-menu.link page="companies" :href="route('companies')">Компании</x-menu.link>
-        <x-menu.link page="" :href="route('vacancy.like')">Понравившиеся вакансии</x-menu.link>
+        <x-menu.link :href="route('main')">Главная</x-menu.link>
+        <x-menu.link :href="route('about')">О нас</x-menu.link>
+        <x-menu.link :href="route('vacancies')">Вакансии</x-menu.link>
+        <x-menu.link :href="route('companies')">Компании</x-menu.link>
+        <x-menu.link :href="route('vacancy.like')">Понравившиеся вакансии</x-menu.link>
     </div>
 
     <div class="flex items-center space-x-4 mt-4 lg:mt-0">
