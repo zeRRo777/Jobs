@@ -159,21 +159,22 @@
 
 
     <div class="flex flex-col md:flex-row gap-6">
-        <x-form.form class="mb-10" size="w-full" method="POST" action="{{ route('logout') }}">
+        <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="{{ route('logout') }}">
             @csrf
             @method('DELETE')
             <x-html.h3 class="mb-4">Выйти из аккаунта</x-html.h3>
             <div class="mt-6">
                 <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Выйти</x-button>
             </div>
-        </x-form.form>
-        <x-form.form class="mb-10" size="w-full">
+        </form>
+        <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="">
+            @csrf
+            @method('DELETE')
             <x-html.h3 class="mb-4">Удаление аккаунта</x-html.h3>
-
             <div class="mt-6">
                 <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
             </div>
-        </x-form.form>
+        </form>
     </div>
 
 </x-layouts.app>

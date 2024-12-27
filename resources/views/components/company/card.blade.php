@@ -1,7 +1,7 @@
 @props(['company' => null, 'number' => null])
 @if ($company)
 <a href="#" class="block">
-    <div class="relative bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transform hover:scale-105 transition duration-300">
+    <div class="relative bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transform hover:scale-105 transition duration-300 h-full">
         <div class="flex flex-row justify-between items-center mb-2">
             @if (!empty($number))
             <div>
