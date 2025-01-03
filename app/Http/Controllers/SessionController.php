@@ -19,10 +19,10 @@ class SessionController extends Controller
 
         if ($user->type == 1) {
 
-            return redirect()->intended(route('company.show', $user->company->id, absolute: false));
+            return redirect()->route('company.show', $user->company->id);
         } elseif ($user->type == 2) {
 
-            return redirect()->intended(route('vacancies', absolute: false));
+            return redirect()->route('vacancies');
         }
     }
 
