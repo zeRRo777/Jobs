@@ -45,4 +45,16 @@ class SmartFilterVacanciesRequest extends FormRequest
             'salary_end.gte' => 'Зарплата от должна быть больше зарплаты до !'
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'cities' => 'Города',
+            'professions' => 'Профессии',
+            'tags' => 'Теги',
+            'companies' => 'Компании',
+            'salary_start' => 'Зарплата от',
+            'salary_end' => 'Зарплата до',
+        ];
+    }
 }

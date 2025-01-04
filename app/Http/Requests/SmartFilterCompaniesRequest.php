@@ -36,4 +36,9 @@ class SmartFilterCompaniesRequest extends FormRequest
             'companies.*.exists' => 'Таких компаний не существует!',
         ];
     }
+
+    public function attributes(): array
+    {
+        return ['cities' => 'Города', 'companies' => 'Компании'];
+    }
 }

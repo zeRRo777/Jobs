@@ -3,7 +3,7 @@
 @if ($vacancy)
 
 <div>
-    <a href="#" class="block bg-gray-800 p-6 rounded-lg hover:scale-105 transform transition h-full">
+    <a wire:navigate href="{{ route('vacancy.show', $vacancy->id) }}" class="block bg-gray-800 p-6 rounded-lg hover:scale-105 transform transition h-full">
         <x-html.h3 class="overflow-hidden overflow-ellipsis text-xl" style="-webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical;">
             {{ $vacancy->title }}
         </x-html.h3>

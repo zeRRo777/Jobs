@@ -21,7 +21,6 @@ class SessionController extends Controller
 
             return redirect()->route('company.show', $user->company->id);
         } elseif ($user->type == 2) {
-
             return redirect()->route('vacancies');
         }
     }

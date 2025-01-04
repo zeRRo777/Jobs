@@ -11,7 +11,7 @@ class VacancyFilterService
     protected array $data = [];
     protected Builder $query;
 
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->data = $data;
         $this->query = Vacancy::query();
@@ -104,5 +104,10 @@ class VacancyFilterService
                     'active' => in_array($name, $this->data['professions'] ?? []),
                 ];
             });
+    }
+
+    public function setData(array $data): void
+    {
+        $this->data = $data;
     }
 }

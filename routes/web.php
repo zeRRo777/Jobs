@@ -25,7 +25,7 @@ Route::view('/companies/1', 'pages.company.show')->name('company.show');
 
 Route::view('/vacancies/likes/1', 'pages.vacancy.like')->name('vacancy.like');
 
-Route::view('/vacancies/1', 'pages.vacancy.show')->name('vacancy.show');
+// Route::view('/vacancies/1', 'pages.vacancy.show')->name('vacancy.show');
 
 // Route::view('/profile/1', 'pages.profile')->name('profile');
 
@@ -56,3 +56,7 @@ Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');
 
 Route::get('/profile/{user}', [UserController::class, 'index'])->name('profile');
+
+Route::get('vacancies/{vacancy}', [VacancyController::class, 'show'])->name('vacancy.show');
+
+Route::post('vacancies/{vacancy}/update', [VacancyController::class, 'update'])->name('vacancy.update');

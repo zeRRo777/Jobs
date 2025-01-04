@@ -8,11 +8,11 @@
                 <div wire:key="{{ $key }}" class="option-item">
                     <label class="inline-flex items-center">
                         <input
-                            type="checkbox"
-                            name="{{ $name }}[]"
+                            type="{{ $type }}"
+                            name="{{ $type === 'radio' ? $name : $name . '[]' }}"
                             value="{{ $value['id'] }}"
                             class="form-checkbox text-indigo-600"
-                            @if ($value['active'])
+                            @if ( $value['active'])
                             checked
                             @endif>
                         <span class="ml-2 text-gray-200">{{ $value['name'] }}</span>

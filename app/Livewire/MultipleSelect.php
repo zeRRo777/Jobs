@@ -12,12 +12,14 @@ class MultipleSelect extends Component
     public string $name;
     public Collection $data;
     public string $query = '';
+    public string $type = 'checkbox';
 
-    public function mount($label, $name, Collection $data): void
+    public function mount($label, $name, Collection $data, $type = 'checkbox'): void
     {
         $this->label = $label;
         $this->name = $name;
         $this->data = $data;
+        $this->type = $type;
     }
 
     public function render(): View
