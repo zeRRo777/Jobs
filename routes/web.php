@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route::view('/companies', 'pages.company.index')->name('companies');
 
-Route::view('/companies/1', 'pages.company.show')->name('company.show');
+// Route::view('/companies/1', 'pages.company.show')->name('company.show');
 
 Route::view('/vacancies/likes/1', 'pages.vacancy.like')->name('vacancy.like');
 
@@ -60,3 +60,7 @@ Route::get('/profile/{user}', [UserController::class, 'index'])->name('profile')
 Route::get('vacancies/{vacancy}', [VacancyController::class, 'show'])->name('vacancy.show');
 
 Route::post('vacancies/{vacancy}/update', [VacancyController::class, 'update'])->name('vacancy.update');
+
+Route::get('companies/{company}', [CompanyController::class, 'show'])->name('company.show');
+
+Route::post('companies/{company}/update', [CompanyController::class, 'update'])->name('company.update');

@@ -1,6 +1,6 @@
 @props(['company' => null, 'number' => null])
 @if ($company)
-<a href="#" class="block">
+<a wire:navigate href="{{ route('company.show', $company->id) }}" class="block">
     <div class="relative bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transform hover:scale-105 transition duration-300 h-full">
         <div class="flex flex-row justify-between items-center mb-2">
             @if (!empty($number))
@@ -9,7 +9,7 @@
             </div>
             @endif
             @if(!empty($company->photo))
-            <img src="{{ $company->photo }}" alt="Логотип компании А" class="h-16 w-16">
+            <img src="{{ asset('storage/' . $company->photo) }}" alt="Логотип {{ $company->name }}" class="h-16 w-16">
             @endif
         </div>
         <!-- Название компании -->

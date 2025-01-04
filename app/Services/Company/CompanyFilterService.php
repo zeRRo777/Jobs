@@ -12,7 +12,7 @@ class CompanyFilterService
     protected $data;
     protected Builder $query;
 
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->data = $data;
         $this->query = Company::query();
@@ -67,5 +67,10 @@ class CompanyFilterService
                 'active' => in_array($id, $this->data['companies'] ?? []),
             ];
         });
+    }
+
+    public function setData(array $data): void
+    {
+        $this->data = $data;
     }
 }

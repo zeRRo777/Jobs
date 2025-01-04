@@ -6,7 +6,7 @@
         <x-success>{{ session('success') }}</x-success>
     @endif
     
-    <div x-data="{ editing: false }">
+    <div x-data="{ editing: @js($errors->any()) }">
             <div class="flex justify-end mb-4">
                 <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
                     <span x-text="editing ? 'Продолжить просмотр' : 'Редактировать'"></span>
@@ -107,9 +107,7 @@
                 <x-form.input-group label="Зарплата до">
                     <x-form.input type="number" name="salary_end" placeholder="Зарплата до" value="{{ $vacancy->salary_end }}" />
                     <x-form.error field="salary_end" />
-                </x-form.input-group> 
-            
-                <input type="hidden" name="company_id" value="{{ $vacancy->company->id }}">
+                </x-form.input-group>    
             
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Редактировать</x-button>

@@ -18,7 +18,6 @@ class CompanyFactory extends Factory
     {
         return [
             'name' => fake()->unique()->company(),
-            'photo' => fake()->imageUrl(),
             'description' => fake()->paragraph(),
         ];
     }

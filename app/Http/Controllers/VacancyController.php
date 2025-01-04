@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\Company;
 use App\Services\Vacancy\VacancyFilterService;
 use App\Services\Vacancy\VacancyService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class VacancyController extends Controller
@@ -83,7 +84,7 @@ class VacancyController extends Controller
         return view('pages.vacancy.show', compact('vacancy', 'tags', 'cities'));
     }
 
-    public function update(Vacancy $vacancy, UpdateVacancyRequest $request)
+    public function update(Vacancy $vacancy, UpdateVacancyRequest $request) : RedirectResponse
     {
         $dataValidated = $request->validated();
 

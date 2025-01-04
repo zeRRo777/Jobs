@@ -24,7 +24,7 @@ class VacancyService
 
         $vacancy->tags()->sync($data['tags']);
 
-        unset($data['new_tags'], $data['tags'], $data['new_city'], $data['company_id']);
+        unset($data['new_tags'], $data['tags'], $data['new_city'], $data['company_id'], $data['vacancy_id']);
 
         $vacancy->update($data);
 
