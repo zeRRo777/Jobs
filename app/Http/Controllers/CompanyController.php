@@ -73,7 +73,7 @@ class CompanyController extends Controller
         return view('pages.company.show', compact('company', 'vacancies', 'cities'));
     }
 
-    public function update(Company $company, UpdateCompanyRequest $request)
+    public function update(Company $company, UpdateCompanyRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
