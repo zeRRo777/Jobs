@@ -25,7 +25,6 @@ class UserFactory extends Factory
             'password' => Hash::make('password'),
             'profession' => fake()->jobTitle(),
             'remember_token' => Str::random(10),
-            'photo' => fake()->imageUrl(),
             'resume' => fake()->paragraph(2),
             'type' => 2,
             'company_id' => null,

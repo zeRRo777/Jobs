@@ -41,9 +41,9 @@ Route::get('/vacancies', [VacancyController::class, 'index'])->name('vacancies')
 
 Route::get('/companies', [CompanyController::class, 'index'])->name('companies');
 
-Route::get('register', [RegisteredController::class, 'create'])->name('register');
+Route::get('/register', [RegisteredController::class, 'create'])->name('register');
 
-Route::post('register', [RegisteredController::class, 'store'])->name('register.store');
+Route::post('/register', [RegisteredController::class, 'store'])->name('register.store');
 
 Route::get('/admin/register', [RegisteredController::class, 'admin_create'])->name('admin.register');
 
@@ -57,10 +57,12 @@ Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');
 
 Route::get('/profile/{user}', [UserController::class, 'index'])->name('profile');
 
-Route::get('vacancies/{vacancy}', [VacancyController::class, 'show'])->name('vacancy.show');
+Route::get('/vacancies/{vacancy}', [VacancyController::class, 'show'])->name('vacancy.show');
 
-Route::post('vacancies/{vacancy}/update', [VacancyController::class, 'update'])->name('vacancy.update');
+Route::post('/vacancies/{vacancy}/update', [VacancyController::class, 'update'])->name('vacancy.update');
 
-Route::get('companies/{company}', [CompanyController::class, 'show'])->name('company.show');
+Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('company.show');
 
-Route::post('companies/{company}/update', [CompanyController::class, 'update'])->name('company.update');
+Route::post('/companies/{company}/update', [CompanyController::class, 'update'])->name('company.update');
+
+Route::post('/profile/{user}/update', [UserController::class, 'update'])->name('profile.update');
