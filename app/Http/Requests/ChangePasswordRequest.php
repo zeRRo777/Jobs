@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NotEqual;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class ChangePasswordRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class ChangePasswordRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,16 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'current_password' => ['required', 'current_password'],
+            'new_password' => ['required', 'confirmed', Password::defaults(), new NotEqual('current_password')],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'current_password' => 'Текущий пароль',
+            'new_password' => 'Новый пароль',
         ];
     }
 }

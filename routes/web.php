@@ -66,3 +66,5 @@ Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('co
 Route::post('/companies/{company}/update', [CompanyController::class, 'update'])->name('company.update');
 
 Route::post('/profile/{user}/update', [UserController::class, 'update'])->name('profile.update');
+
+Route::post('/profile/changePassword', [UserController::class, 'changePassword'])->name('profile.changePassword');

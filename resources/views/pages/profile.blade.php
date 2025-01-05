@@ -6,7 +6,7 @@
         <x-success>{{ session('success') }}</x-success>
     @endif
 
-    <div x-data="{ editing: @js($errors->any()) }">
+    <div x-data="{ editing: @js($errors->hasAny(['name', 'email', 'profession', 'resume', 'new_cities', 'photo', 'delete_photo'])) }">
         <div class="flex justify-end mb-4">
             <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
                 <span x-text="editing ? 'Продолжить просмотр' : 'Редактировать'"></span>
@@ -132,16 +132,22 @@
     </div>
 
     <div class="flex flex-col md:flex-row gap-6">
-        <x-form.form class="mb-10" size="w-full">
+        <x-form.form class="mb-10" size="w-full" action="{{ route('profile.changePassword', $user->id) }}" method="POST">
+            @csrf
             <x-html.h3 class="mb-4">Смена пароля</x-html.h3>
             <x-form.input-group label="Текущий пароль">
-                <x-form.input type="password" name="current_password" placeholder="Введите текущий пароль" value="" />
+                <x-form.input type="password" name="current_password" placeholder="Введите текущий пароль" />
                 <x-form.error field="current_password" />
             </x-form.input-group>
-
+     
             <x-form.input-group label="Новый пароль">
-                <x-form.input type="password" name="new_password" placeholder="Введите новый пароль" value="" />
-                <x-form.error field="new_password"></x-form.error>
+                <x-form.input type="password" name="new_password" placeholder="Введите новый пароль" />
+                <x-form.error field="new_password" />
+            </x-form.input-group>
+     
+            <x-form.input-group label="Подтвердите новый пароль">
+                <x-form.input type="password" name="new_password_confirmation" placeholder="Подтвердите новый пароль" />
+                <x-form.error field="new_password_confirmation" />
             </x-form.input-group>
 
             <div class="mt-6">
