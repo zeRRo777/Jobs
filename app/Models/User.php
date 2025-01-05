@@ -58,4 +58,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Vacancy::class, 'user_vacancy_likes');
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->type == 1;
+    }
+
+    public function isUser(): bool
+    {
+        return $this->type == 2;
+    }
 }
