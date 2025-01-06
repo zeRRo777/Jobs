@@ -33,6 +33,6 @@ class SessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('main');
+        return redirect()->route('login');
     }
 }
