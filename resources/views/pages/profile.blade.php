@@ -57,7 +57,7 @@
         </div>
 
         @if (empty($user->resume))
-            <x-html.h3 class="mb-1">Резюме: Не указано</x-html.h3>
+            <x-html.h3 class="mb-4">Резюме: Не указано</x-html.h3>
         @else
             <x-html.h3 class="mb-1">Резюме:</x-html.h3>
             <x-html.p class="mb-4">{{ $user->resume }}</x-html.p>
