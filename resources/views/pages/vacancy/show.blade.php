@@ -109,6 +109,8 @@
                     <x-form.error field="salary_end" />
                 </x-form.input-group>    
             
+                <x-form.error field="error" />
+
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Редактировать</x-button>
                 </div>

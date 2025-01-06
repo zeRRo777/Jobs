@@ -5,30 +5,39 @@ namespace App\Services\Vacancy;
 use App\Models\Vacancy;
 use App\Models\City;
 use App\Models\Tag;
+use Illuminate\Support\Facades\DB;
 
 class VacancyService
 {
     public function updateVacancy(Vacancy $vacancy, array $data)
     {
-        if (!empty($data['new_city'])) {
-            $city = $this->createCity($data['new_city']);
-            $data['city_id'] = $city->id;
+        try{
+            DB::beginTransaction();
+            if (!empty($data['new_city'])) {
+                $city = $this->createCity($data['new_city']);
+                $data['city_id'] = $city->id;
+            }
+    
+            if (!empty($data['new_tags'])) {
+                $newTagIds = $this->createTags($data['new_tags']);
+                $data['tags'] = array_merge($data['tags'] ?? [], $newTagIds);
+            }
+    
+            $data['tags'] = $data['tags'] ?? [];
+    
+            $vacancy->tags()->sync($data['tags']);
+    
+            unset($data['new_tags'], $data['tags'], $data['new_city'], $data['company_id'], $data['vacancy_id']);
+    
+            $vacancy->update($data);
+    
+            DB::commit();
+
+            return $vacancy;
+        }catch (\Exception $e){
+            DB::rollBack();
+            throw $e;
         }
-
-        if (!empty($data['new_tags'])) {
-            $newTagIds = $this->createTags($data['new_tags']);
-            $data['tags'] = array_merge($data['tags'] ?? [], $newTagIds);
-        }
-
-        $data['tags'] = $data['tags'] ?? [];
-
-        $vacancy->tags()->sync($data['tags']);
-
-        unset($data['new_tags'], $data['tags'], $data['new_city'], $data['company_id'], $data['vacancy_id']);
-
-        $vacancy->update($data);
-
-        return $vacancy;
     }
 
     protected function createCity(string $cityName): City

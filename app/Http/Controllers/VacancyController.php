@@ -11,6 +11,7 @@ use App\Models\Company;
 use App\Services\Vacancy\VacancyFilterService;
 use App\Services\Vacancy\VacancyService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class VacancyController extends Controller
@@ -88,7 +89,13 @@ class VacancyController extends Controller
     {
         $dataValidated = $request->validated();
 
-        $this->vacancyService->updateVacancy($vacancy, $dataValidated);
+        try{
+            $this->vacancyService->updateVacancy($vacancy, $dataValidated);
+        }catch(\Throwable $e){
+            Log::error('Ошибка при обновлении вакансии: ' . $e->getMessage(), ['exception' => $e]);
+
+            return back()->withErrors(['error' => 'Ошибка при обновлении данных вакансии. Попробуйте снова.']);
+        }
 
         return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Данные вакансии успешно обновлены!');
     }

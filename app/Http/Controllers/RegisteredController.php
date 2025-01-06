@@ -4,16 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminRegisteredRequest;
 use App\Http\Requests\RegisteredRequest;
-use App\Models\Company;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use App\Services\User\RegisteredService;
 
 class RegisteredController extends Controller
 {
+    private RegisteredService $registeredService;
+
+    public function __construct(RegisteredService $registeredService)
+    {
+        $this->registeredService = $registeredService;
+    }
+
     public function create(): View
     {
         return view('pages.auth.register');
@@ -21,19 +25,13 @@ class RegisteredController extends Controller
 
     public function store(RegisteredRequest $request): RedirectResponse
     {
-        $dataValidated = $request->validated();
-
-        $dataValidated['type'] = 2;
-
-        $dataValidated['password'] = Hash::make($dataValidated['password']);
-
-        $user = User::create($dataValidated);
-
-        // event(new Registered($user));
-
-        Auth::login($user, true);
-
-        return redirect()->route('vacancies');
+        try {
+            $this->registeredService->registerUser($request->validated());
+            return redirect()->route('vacancies');
+        } catch (\Exception $e) {
+            Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать пользователя. Попробуйте снова.']);
+        } 
     }
 
     public function admin_create(): View
@@ -43,41 +41,12 @@ class RegisteredController extends Controller
 
     public function admin_store(AdminRegisteredRequest $request): RedirectResponse
     {
-        $dataValidated = $request->validated();
-
-        $dataValidated['type'] = 1;
-
-        $dataValidated['password'] = Hash::make($dataValidated['password']);
-
-        if (isset($dataValidated['company'])) {
-
-            $company = new Company();
-
-            $company->name = $dataValidated['company'];
-
-            $company->save();
-
-            $dataValidated['company_id'] = $company->id;
-
-            unset($dataValidated['company']);
-        } else if (isset($dataValidated['secret_code'])) {
-            $company = Company::where('secret_code', $dataValidated['secret_code'])->firstOrFail();
-
-            $company->secret_code = null;
-
-            $company->save();
-
-            $dataValidated['company_id'] = $company->id;
-
-            unset($dataValidated['secret_code']);
+        try {
+            $companyId = $this->registeredService->registerAdmin($request->validated());
+            return redirect()->route('company.show', $companyId);
+        } catch (\Exception $e) {
+            Log::error('Ошибка при регистрации администратора: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать администратора. Попробуйте снова.']);
         }
-
-        $user = User::create($dataValidated);
-
-        // event(new Registered($user));
-
-        Auth::login($user, true);
-
-        return redirect()->route('company.show', $company->id);
     }
 }

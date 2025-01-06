@@ -26,6 +26,7 @@
             <x-form.error field="password" />
         </x-form.input-group>
 
+        <x-form.error field="error" />
         <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Зарегистрироваться</x-button>
     </x-form.form>
 

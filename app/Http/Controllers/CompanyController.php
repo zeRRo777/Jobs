@@ -11,6 +11,8 @@ use App\Services\Company\CompanyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class CompanyController extends Controller
@@ -80,11 +82,11 @@ class CompanyController extends Controller
         $validatedData = $request->validated();
 
         try {
-
             $this->companyService->updateCompany($company, $validatedData);
-        } catch (\Exception $e) {
-
-            return back()->withErrors(['photo' => $e->getMessage()]);
+        } catch (\Throwable $e) {
+            Log::error('Ошибка при обновлении компании: ' . $e->getMessage(), ['exception' => $e]);
+    
+            return back()->withErrors(['error' => 'Ошибка при обновлении данных компании. Попробуйте снова.']);
         }
 
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
@@ -94,13 +96,22 @@ class CompanyController extends Controller
     {
         $user = Auth::user();
 
-        if(!empty($user->company()))
-        {
-            $user->company->update(['secret_code' => $this->companyService->generateSecretCode()]);
+        try {
+            DB::beginTransaction();
+
+            $secretCode = $this->companyService->generateSecretCode();
+            $user->company->update(['secret_code' => $secretCode]);
+
+            DB::commit(); 
 
             return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
-        }
+        } catch (\Exception $e) {
+            DB::rollBack(); 
 
-        return redirect()->route('profile', $user->id)->withErrors(['secret_code' => 'Вы не прикреплены к компании!']);
+            Log::error('Ошибка генерации секретного кода: ' . $e->getMessage(), ['exception' => $e]);
+            
+            return redirect()->route('profile', $user->id)
+                ->withErrors(['secret_code' => 'Не удалось сгенерировать секретный код. Попробуйте снова.']);
+        }
     }
 }
