@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\Company;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CompanyService
 {
@@ -72,5 +73,10 @@ class CompanyService
         {
             Storage::disk('public')->delete($path);
         }
+    }
+
+    public function generateSecretCode(int $length = 10): string
+    {
+        return Str::random($length);
     }
 }

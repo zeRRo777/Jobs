@@ -9,6 +9,8 @@ use App\Models\Company;
 use App\Services\Company\CompanyFilterService;
 use App\Services\Company\CompanyService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CompanyController extends Controller
@@ -86,5 +88,19 @@ class CompanyController extends Controller
         }
 
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
+    }
+
+    public function generateSecretCode(Request $request)
+    {
+        $user = Auth::user();
+
+        if(!empty($user->company()))
+        {
+            $user->company->update(['secret_code' => $this->companyService->generateSecretCode()]);
+
+            return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
+        }
+
+        return redirect()->route('profile', $user->id)->withErrors(['secret_code' => 'Вы не прикреплены к компании!']);
     }
 }

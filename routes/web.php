@@ -68,3 +68,5 @@ Route::post('/companies/{company}/update', [CompanyController::class, 'update'])
 Route::post('/profile/{user}/update', [UserController::class, 'update'])->name('profile.update');
 
 Route::post('/profile/changePassword', [UserController::class, 'changePassword'])->name('profile.changePassword');
+
+Route::post('/profile/generateSecretCode', [CompanyController::class, 'generateSecretCode'])->name('company.generateSecretCode');

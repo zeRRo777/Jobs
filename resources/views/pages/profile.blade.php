@@ -155,25 +155,31 @@
             </div>
         </x-form.form>
 
-        <x-form.form class="mb-10" size="w-full">
-            <x-html.h3 class="mb-4">Генерация секретного кода</x-html.h3>
-            <x-html.p class="mb-4">
-                После генерации вам нужно будет скопировать код и отправить новому сотруднику. После использования или новой генерации код удаляется.
-            </x-html.p>
-
-            <x-form.input-group label="Сгенерированный код">
-                <x-form.input type="text" name="secret_code" value="fdhdhfhdfhdshfi8976548973jvhjciuh" disabled />
-                <x-form.error field="new_password" />
-            </x-form.input-group>
-
-            <div class="mt-6">
-                <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
+        @if ($user->isAdmin())
+            <div class="space-y-6  bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
+                <x-html.h3 class="mb-4">Генерация секретного кода</x-html.h3>
+                <x-html.p class="mb-4">
+                    После генерации вам нужно будет скопировать код и отправить новому сотруднику. После использования или новой генерации код удаляется.
+                </x-html.p>
+                <x-form.input-group label="Сгенерированный код">
+                    <div class="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded focus:outline-none focus:shadow-outline">
+                        @if (!empty($user->company->secret_code))
+                            {{ $user->company->secret_code }}
+                        @else
+                            Здесь будет находиться код    
+                        @endif
+                    </div>
+                    <x-form.error field="secret_code" />
+                </x-form.input-group>
+                <form action="{{ route('company.generateSecretCode') }}" method="POST">
+                    @csrf
+                    <div class="mt-6">
+                        <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
+                    </div>
+                </form>
             </div>
-        </x-form.form>
+        @endif
     </div>
-
-
-
 
     <div class="flex flex-col md:flex-row gap-6">
         <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="{{ route('logout') }}">
