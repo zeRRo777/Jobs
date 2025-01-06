@@ -5,12 +5,22 @@
     @if (session('success'))
         <x-success>{{ session('success') }}</x-success>
     @endif
+
+    @if (session('delete_vacancy'))
+        <x-success>{{ session('delete_vacancy') }}</x-success>
+    @endif
     
     <div x-data="{ editing: @js($errors->any()) }">
-            <div class="flex justify-end mb-4">
+            <div class="flex justify-end mb-4 gap-3">
                 <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
                     <span x-text="editing ? 'Продолжить просмотр' : 'Редактировать'"></span>
                 </x-button>
+                <form action="{{ route('vacancy.delete', $vacancy->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <x-button class="text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
+                </form>
+                
             </div>
 
         <x-html.h3 class="mb-2">
@@ -47,7 +57,7 @@
         <div class="flex flex-row items-center space-x-4 mb-2">
             <x-html.h3>Компания: {{ $vacancy->company->name }}</x-html.h3>
             @if (!empty($vacancy->company->photo))
-            <img  src="{{ $vacancy->company->photo }}" alt="Логотип компании" class="h-8 w-8">
+            <img src="{{ asset('storage/' . $vacancy->company->photo) }}" alt="Логотип {{ $vacancy->company->name }}" class="h-10 w-10 mb-2">
             @endif
         </div>
 

@@ -11,6 +11,8 @@ use App\Models\Company;
 use App\Services\Vacancy\VacancyFilterService;
 use App\Services\Vacancy\VacancyService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -98,5 +100,18 @@ class VacancyController extends Controller
         }
 
         return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Данные вакансии успешно обновлены!');
+    }
+
+    public function delete(Vacancy $vacancy) : RedirectResponse
+    {
+        try{
+            $this->vacancyService->delete($vacancy);
+        }catch(\Throwable $e){
+            Log::error('Ошибка при удалении вакансии: ' . $e->getMessage(), ['exception' => $e]);
+
+            return back()->withErrors(['delete_vacancy' => 'Ошибка при удалении вакансии. Попробуйте снова.']);
+        }
+
+        return redirect()->route('company.show', Auth::user()->company->id)->with('success', 'Вакансия успешно удалена!');
     }
 }

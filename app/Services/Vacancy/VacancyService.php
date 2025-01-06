@@ -61,5 +61,17 @@ class VacancyService
         }
         return $tagIds;
     }
+
+    public function delete(Vacancy $vacancy)
+    {
+        try{
+            DB::beginTransaction();
+            $vacancy->delete();
+            DB::commit();
+        }catch (\Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+    }
 }
 
