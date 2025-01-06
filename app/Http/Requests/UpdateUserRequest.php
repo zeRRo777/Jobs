@@ -35,7 +35,7 @@ class UpdateUserRequest extends FormRequest
             'email' => ['required', 'email', 'max:255', 
             Rule::unique('users')->ignore($this->user_id)
             ],
-            'profession' => ['required', 'string', 'max:255'],
+            'profession' => ['nullable', 'string', 'max:255'],
             'user_id' => ['required', 'exists:users,id'],
             'new_cities' => ['nullable', 'string', new UniqueCities],
             'cities' => ['nullable', 'array'],

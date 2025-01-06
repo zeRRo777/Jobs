@@ -5,6 +5,9 @@
         <x-button class="text-sm px-4 py-2" :href="route('login')" type_component="link">Войти</x-button>
     </x-slot:navigate_buttons>
     <x-slot:header>Регистрация</x-slot:header>
+    @if (session('success'))
+        <x-success>{{ session('success') }}</x-success>
+    @endif
 
     <x-form.form action="{{ route('register.store') }}" method="POST" class="mx-auto">
         @csrf

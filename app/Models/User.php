@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -68,4 +69,27 @@ class User extends Authenticatable
     {
         return $this->type == 2;
     }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            $company = $user->company;
+
+            if(!empty($company) && $company->users()->count() == 1){
+                $company->delete();
+            }
+
+            if(!empty($user->photo))
+            {
+                if(Storage::disk('public')->exists($user->photo))
+                {
+                    Storage::disk('public')->delete($user->photo);
+                }
+            }
+        });
+    }
+
 }

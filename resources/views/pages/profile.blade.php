@@ -181,23 +181,51 @@
         @endif
     </div>
 
-    <div class="flex flex-col md:flex-row gap-6">
-        <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="{{ route('logout') }}">
-            @csrf
-            @method('DELETE')
-            <x-html.h3 class="mb-4">Выйти из аккаунта</x-html.h3>
-            <div class="mt-6">
-                <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Выйти</x-button>
+    <div x-data="{ deleteModal: false }" x-init="deleteModal = @json($errors->has('password_for_delete'))">
+        <div class="flex flex-col md:flex-row gap-6">
+            <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="{{ route('logout') }}">
+                @csrf
+                @method('DELETE')
+                <x-html.h3 class="mb-4">Выйти из аккаунта</x-html.h3>
+                <div class="mt-6">
+                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Выйти</x-button>
+                </div>
+            </form>
+
+            <div class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
+                <x-html.h3 class="mb-4">Удаление аккаунта</x-html.h3>
+                <div class="mt-6">
+                    <x-button class="w-full text-sm px-4 py-2" type="button" type_component="button" @click="deleteModal = true">
+                        Удалить
+                    </x-button>
+                </div>
             </div>
-        </form>
-        <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="">
-            @csrf
-            @method('DELETE')
-            <x-html.h3 class="mb-4">Удаление аккаунта</x-html.h3>
-            <div class="mt-6">
-                <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
+            <div x-show="deleteModal" class="fixed inset-0 flex items-center justify-center">
+                <div class="absolute inset-0 bg-black opacity-50"></div>
+                <div class="relative bg-gray-800 p-8 rounded-lg shadow-lg">
+                    <x-html.h3 class="mb-4">Предупреждение</x-html.h3>
+                    <x-html.p class="mb-4">Это действие необратимо. Вы уверены, что хотите удалить аккаунт?</x-html.p>
+                    <form method="POST" action="{{ route('profile.deleteAccount') }}" class="space-y-4">
+                        @method('DELETE')
+                        @csrf
+
+                        <x-form.input-group label="Текущий пароль">
+                            <x-form.input type="password" name="password_for_delete" placeholder="Введите текущий пароль" />
+                            <x-form.error field="password_for_delete" />
+                        </x-form.input-group>
+
+                        <x-button class="w-full text-sm px-4 py-2" type="button" type_component="button" @click="deleteModal = false">
+                            Отмена
+                        </x-button>
+
+                        <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">
+                            Удалить
+                        </x-button>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
+
 
 </x-layouts.app>

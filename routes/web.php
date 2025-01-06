@@ -70,3 +70,5 @@ Route::post('/profile/{user}/update', [UserController::class, 'update'])->name('
 Route::post('/profile/changePassword', [UserController::class, 'changePassword'])->name('profile.changePassword');
 
 Route::post('/profile/generateSecretCode', [CompanyController::class, 'generateSecretCode'])->name('company.generateSecretCode');
+
+Route::delete('/profile/deleteAccount', [UserController::class, 'delete'])->name('profile.deleteAccount');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\City;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -77,5 +79,22 @@ class UserController extends Controller
         $request->session()->regenerateToken();
     
         return redirect()->route('login')->with('success', 'Пароль успешно изменен!');
+    }
+
+    public function delete(DeleteUserRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        $user = Auth::user();
+
+        Auth::logout();
+        
+        $user->delete();
+           
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect()->route('register')->with('success', 'Аккаунт был успешно удален!');
     }
 }
