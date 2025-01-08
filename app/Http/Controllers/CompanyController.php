@@ -6,6 +6,7 @@ use App\Http\Requests\SmartFilterCompaniesRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\City;
 use App\Models\Company;
+use App\Models\Tag;
 use App\Services\Company\CompanyFilterService;
 use App\Services\Company\CompanyService;
 use Illuminate\Http\RedirectResponse;
@@ -74,7 +75,23 @@ class CompanyController extends Controller
             ];
         });
 
-        return view('pages.company.show', compact('company', 'vacancies', 'cities'));
+        $tags_vacancy = Tag::all()->map(function($tag) {
+            return [
+                'id' => $tag->id,
+                'name' => $tag->name,
+                'active' => in_array($tag->id, session()->get('tags_vacancy', []))
+            ];
+        });
+
+        $cities_vacancy = City::all()->map(function ($city) {
+            return [
+                'id' => $city->id,
+                'name' => $city->name,
+                'active' => $city->id == session()->get('city_id_vacancy')
+            ];
+        });
+
+        return view('pages.company.show', compact('company', 'vacancies', 'cities', 'tags_vacancy', 'cities_vacancy'));
     }
 
     public function update(Company $company, UpdateCompanyRequest $request): RedirectResponse
@@ -85,8 +102,8 @@ class CompanyController extends Controller
             $this->companyService->updateCompany($company, $validatedData);
         } catch (\Throwable $e) {
             Log::error('Ошибка при обновлении компании: ' . $e->getMessage(), ['exception' => $e]);
-    
-            return back()->withErrors(['error' => 'Ошибка при обновлении данных компании. Попробуйте снова.']);
+
+            return back()->withErrors(['error_company' => 'Ошибка при обновлении данных компании. Попробуйте снова.']);
         }
 
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
@@ -102,14 +119,14 @@ class CompanyController extends Controller
             $secretCode = $this->companyService->generateSecretCode();
             $user->company->update(['secret_code' => $secretCode]);
 
-            DB::commit(); 
+            DB::commit();
 
             return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
         } catch (\Exception $e) {
-            DB::rollBack(); 
+            DB::rollBack();
 
             Log::error('Ошибка генерации секретного кода: ' . $e->getMessage(), ['exception' => $e]);
-            
+
             return redirect()->route('profile', $user->id)
                 ->withErrors(['secret_code' => 'Не удалось сгенерировать секретный код. Попробуйте снова.']);
         }

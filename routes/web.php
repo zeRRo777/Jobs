@@ -74,3 +74,5 @@ Route::post('/profile/generateSecretCode', [CompanyController::class, 'generateS
 Route::delete('/profile/deleteAccount', [UserController::class, 'delete'])->name('profile.deleteAccount');
 
 Route::delete('/vacancies/{vacancy}', [VacancyController::class, 'delete'])->name('vacancy.delete');
+
+Route::post('/companies/{company}/vacancyCreate', [VacancyController::class, 'store'])->name('vacancy.store');

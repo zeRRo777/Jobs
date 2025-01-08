@@ -17,20 +17,20 @@ class VacancyService
                 $city = $this->createCity($data['new_city']);
                 $data['city_id'] = $city->id;
             }
-    
+
             if (!empty($data['new_tags'])) {
                 $newTagIds = $this->createTags($data['new_tags']);
                 $data['tags'] = array_merge($data['tags'] ?? [], $newTagIds);
             }
-    
+
             $data['tags'] = $data['tags'] ?? [];
-    
+
             $vacancy->tags()->sync($data['tags']);
-    
+
             unset($data['new_tags'], $data['tags'], $data['new_city'], $data['company_id'], $data['vacancy_id']);
-    
+
             $vacancy->update($data);
-    
+
             DB::commit();
 
             return $vacancy;
@@ -69,6 +69,38 @@ class VacancyService
             $vacancy->delete();
             DB::commit();
         }catch (\Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function createVacancy(array $data)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (!empty($data['new_city'])) {
+                $city = $this->createCity($data['new_city']);
+                $data['city_id'] = $city->id;
+            }
+
+            if (!empty($data['new_tags'])) {
+                $newTagIds = $this->createTags($data['new_tags']);
+                $data['tags'] = array_merge($data['tags'] ?? [], $newTagIds);
+            }
+
+            $tags = $data['tags'] ?? [];
+
+            unset($data['new_tags'], $data['tags'], $data['new_city']);
+
+            $vacancy = Vacancy::create($data);
+
+            $vacancy->tags()->attach($tags);
+
+            DB::commit();
+
+            return $vacancy;
+        } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }

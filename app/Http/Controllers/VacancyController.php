@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SmartFilterVacanciesRequest;
+use App\Http\Requests\StoreVacancyRequest;
 use App\Http\Requests\UpdateVacancyRequest;
 use App\Models\Vacancy;
 use App\Models\City;
@@ -113,5 +114,23 @@ class VacancyController extends Controller
         }
 
         return redirect()->route('company.show', Auth::user()->company->id)->with('success', 'Вакансия успешно удалена!');
+    }
+
+    public function store(Company $company, StoreVacancyRequest $request) : RedirectResponse
+    {
+        $dataValidated = $request->validated();
+
+        try{
+            $vacancy = $this->vacancyService->createVacancy($dataValidated);
+        }catch(\Throwable $e){
+            Log::error('Ошибка при создании вакансии: ' . $e->getMessage(), ['exception' => $e]);
+
+            return back()->withErrors(['error_vacancy' => 'Ошибка при создании новой вакансии. Попробуйте снова.']);
+        }
+
+        return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Вакансия успешно создана!');
+
+
+
     }
 }

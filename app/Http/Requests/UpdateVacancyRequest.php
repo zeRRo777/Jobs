@@ -33,7 +33,7 @@ class UpdateVacancyRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'title' => ['required', 'max:255', 'string', 
+        'title' => ['required', 'max:255', 'string',
         Rule::unique('vacancies', 'title')->where(function (Builder $query){
             return $query->where('company_id', $this->company_id);
         })->ignore($this->vacancy_id)
@@ -42,7 +42,7 @@ class UpdateVacancyRequest extends FormRequest
         'new_city' => ['nullable', 'string', 'max:255', 'unique:cities,name'],
         'company_id' => ['required', 'exists:companies,id'],
         'vacancy_id' => ['required', 'exists:vacancies,id'],
-        'city_id' => ['required', 'exists:cities,id'],
+        'city_id' => ['nullable', 'exists:cities,id'],
         'new_tags' => ['nullable', 'string', new UniqueTags],
         'tags' => ['nullable', 'array'],
         'tags.*' => ['string', 'exists:tags,id'],

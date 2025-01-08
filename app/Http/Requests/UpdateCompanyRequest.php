@@ -19,7 +19,7 @@ class UpdateCompanyRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'company_id' => $this->route('company')->id,
+            'company_id_company' => $this->route('company')->id,
         ]);
     }
 
@@ -31,37 +31,52 @@ class UpdateCompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'max:255', 'string',
-            Rule::unique('companies')->ignore($this->company_id)
+            'name_company' => ['required', 'max:255', 'string',
+            Rule::unique('companies')->ignore($this->company_id_company)
             ],
-            'company_id' => ['required', 'exists:companies,id'],
-            'description' => ['required', 'string', 'max:1000'],
-            'new_cities' => ['nullable', 'string', new UniqueCities],
-            'cities' => ['nullable', 'array'],
-            'cities.*' => ['string', 'exists:cities,id'],
-            'photo' => ['nullable', 'image', 'max:5120', 'exclude_with:delete_photo'],
-            'delete_photo' => ['nullable', 'string'],
+            'company_id_company' => ['required', 'exists:companies,id'],
+            'description_company' => ['required', 'string', 'max:1000'],
+            'new_cities_company' => ['nullable', 'string', new UniqueCities],
+            'cities_company' => ['nullable', 'array'],
+            'cities_company.*' => ['string', 'exists:cities,id'],
+            'photo_company' => ['nullable', 'image', 'max:5120', 'exclude_with:delete_photo'],
+            'delete_photo_company' => ['nullable', 'string'],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name' => 'Название компании',
-            'description' => 'Описание компании',
-            'new_cities' => 'Новые города',
-            'cities' => 'Города',
-            'photo' => 'Логотип компании',
-            'delete_photo' => 'Удалить логотип компании',
+            'name_company' => 'Название компании',
+            'description_company' => 'Описание компании',
+            'new_cities_company' => 'Новые города',
+            'cities_company' => 'Города',
+            'photo_company' => 'Логотип компании',
+            'delete_photo_company' => 'Удалить логотип компании',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'company_id.required' => 'Отсутвует идентификатор компании!',
-            'company_id.exists' => 'Такой компании не существует!',
-            'cities.*.exists' => 'Таких городов не существует!',
+            'company_id_company.required' => 'Отсутвует идентификатор компании!',
+            'company_id_company.exists' => 'Такой компании не существует!',
+            'cities_company.*.exists' => 'Таких городов не существует!',
         ];
+    }
+
+    public function validated($key = null, $default = null)
+    {
+        $validatedData = parent::validated($key, $default);
+
+        $newData = [];
+
+        foreach ($validatedData as $key => $value) {
+
+            $newKey = preg_replace('/_company$/', '', $key);
+            $newData[$newKey] = $value;
+        }
+
+        return $newData;
     }
 }
