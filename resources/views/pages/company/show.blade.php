@@ -47,6 +47,62 @@
         </x-html.p>
         @endif
 
+        <div x-show="editing" class="mb-5">
+            <x-html.h2>Редактирование</x-html.h2>
+            <x-form size="" method="POST" action="{{ route('company.update', $company->id) }}" enctype="multipart/form-data">
+                @csrf
+                <x-form.input-group label="Название">
+                    <x-form.input type="text" name="name" placeholder="Название компании" value="{{ $company->name }}" />
+                    <x-form.error field="name" />
+                </x-form.input-group>
+
+                <x-form.input-group label="Информация о компании">
+                    <x-form.textarea name="description" placeholder="Информация о компании">
+                        {{ $company->description }}
+                    </x-form.textarea>
+                    <x-form.error field="description" />
+                </x-form.input-group>
+
+                <x-form.input-group label="Выберите города или введите новые через запятую">
+                    <x-form.input type="text" name="new_cities" placeholder="Название новых городов" value="{{ old('new_cities') }}" />
+                    <x-form.error field="new_cities" />
+                </x-form.input-group>
+
+                @livewire('multiple-select', [
+                        'label' => 'Поиск города',
+                        'name' => 'cities',
+                        'data' => $cities,
+                        ])
+
+                <div x-data="{ deletePhoto: false }">
+                    <x-form.input-group label="Загрузить файл">
+                        @if (!empty($company->photo))
+                        <img src="{{ asset('storage/' . $company->photo) }}" alt="Логотип {{ $company->name }}" class="h-40 w-40 mb-2">
+                        @endif
+
+                        <div x-show="!deletePhoto">
+                            <x-form.input type="file" name="photo"/>
+                        </div>
+
+                        <x-form.error field="photo" />
+                    </x-form.input-group>
+
+                    @if(!empty($company->photo))
+                    <x-form.input-group label="Удалить текущее фото">
+                        <input type="checkbox" name="delete_photo" x-model="deletePhoto">
+                        <x-form.error field="delete_photo" />
+                    </x-form.input-group>
+                    @endif
+                </div>
+
+                <x-form.error field="error" />
+
+                <div class="mt-6">
+                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Редактировать</x-button>
+                </div>
+
+            </x-form>
+        </div>
 
         <x-html.h2>Вакансии</x-html.h2>
 
@@ -60,62 +116,5 @@
         @else
         <x-html.h2>У данной компании нет вакансий</x-html.h2>
         @endif
-
-        <div x-show="editing">
-            <x-html.h2>Редактирование</x-html.h2>
-            <x-form size="" method="POST" action="{{ route('company.update', $company->id) }}" enctype="multipart/form-data">
-                @csrf
-                <x-form.input-group label="Название">
-                    <x-form.input type="text" name="name" placeholder="Название компании" value="{{ $company->name }}" />
-                    <x-form.error field="name" />
-                </x-form.input-group>
-            
-                <x-form.input-group label="Информация о компании">
-                    <x-form.textarea name="description" placeholder="Информация о компании">
-                        {{ $company->description }}
-                    </x-form.textarea>
-                    <x-form.error field="description" />
-                </x-form.input-group>
-            
-                <x-form.input-group label="Выберите города или введите новые через запятую">
-                    <x-form.input type="text" name="new_cities" placeholder="Название новых городов" value="{{ old('new_cities') }}" />
-                    <x-form.error field="new_cities" />
-                </x-form.input-group>
-            
-                @livewire('multiple-select', [
-                        'label' => 'Поиск города',
-                        'name' => 'cities',
-                        'data' => $cities,
-                        ])
-    
-                <div x-data="{ deletePhoto: false }">
-                    <x-form.input-group label="Загрузить файл">
-                        @if (!empty($company->photo))
-                        <img src="{{ asset('storage/' . $company->photo) }}" alt="Логотип {{ $company->name }}" class="h-40 w-40 mb-2">
-                        @endif
-                    
-                        <div x-show="!deletePhoto">
-                            <x-form.input type="file" name="photo"/>
-                        </div>
-                    
-                        <x-form.error field="photo" />
-                    </x-form.input-group>
-                
-                    @if(!empty($company->photo))
-                    <x-form.input-group label="Удалить текущее фото">
-                        <input type="checkbox" name="delete_photo" x-model="deletePhoto">
-                        <x-form.error field="delete_photo" />
-                    </x-form.input-group>
-                    @endif
-                </div>
-
-                <x-form.error field="error" />
-            
-                <div class="mt-6">
-                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Редактировать</x-button>
-                </div>
-            
-            </x-form>
-        </div>
     </div>
 </x-layouts.app>
