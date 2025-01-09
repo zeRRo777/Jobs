@@ -3,14 +3,12 @@
     <x-slot:header>{{ $company->name }}</x-slot:header>
 
     @if (session('success'))
-        <x-success>{{ session('success') }}</x-success>
+    <x-success>{{ session('success') }}</x-success>
     @endif
 
-    @dump($errors->all())
-
     <div x-data="{
-        editing: @js($errors->hasAny(['name_company', 'company_id_company', 'description_company', 'new_cities_company', 'cities_company', 'photo_company', 'delete_photo_company'])),
-        add_vacancy: @js($errors->hasAny(['title_vacancy', 'description_vacancy', 'new_city_vacancy', 'company_id_vacancy', 'city_id_vacancy', 'new_tags_vacancy', 'tags_vacancy', 'salary_start_vacancy', 'salary_end_vacancy']))
+        editing: @js($errors->hasAny(['name_company', 'company_id_company', 'description_company', 'new_cities_company', 'cities_company', 'photo_company', 'delete_photo_company', 'error_company'])),
+        add_vacancy: @js($errors->hasAny(['title_vacancy', 'description_vacancy', 'new_city_vacancy', 'company_id_vacancy', 'city_id_vacancy', 'new_tags_vacancy', 'tags_vacancy', 'salary_start_vacancy', 'salary_end_vacancy', 'error_vacancy']))
     }">
         <div class="flex justify-end mb-4">
             <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
@@ -25,30 +23,30 @@
         @endif
 
         @if (!empty($company->cities))
-            <x-html.h3 class="mb-2">
+        <x-html.h3 class="mb-2">
 
-                @if ($company->cities->count() > 0)
-                    @if ($company->cities->count() == 1)
-                        Город: {{ $company->cities->first()->name }}
-                    @else
-                        Города:
-                        @foreach ($company->cities as $city)
-                            @if ($loop->last)
-                                {{ $city->name }}.
-                            @else
-                                {{ $city->name }},
-                            @endif
-                        @endforeach
-                    @endif
-                @else
-                    Город: Не указан
-                @endif
-            </x-html.h3>
+            @if ($company->cities->count() > 0)
+            @if ($company->cities->count() == 1)
+            Город: {{ $company->cities->first()->name }}
+            @else
+            Города:
+            @foreach ($company->cities as $city)
+            @if ($loop->last)
+            {{ $city->name }}.
+            @else
+            {{ $city->name }},
+            @endif
+            @endforeach
+            @endif
+            @else
+            Город: Не указан
+            @endif
+        </x-html.h3>
         @endif
 
         @if (!empty($company->description))
         <x-html.p class="mb-10">
-           {{ $company->description }}
+            {{ $company->description }}
         </x-html.p>
         @endif
 
@@ -74,10 +72,10 @@
                 </x-form.input-group>
 
                 @livewire('multiple-select', [
-                        'label' => 'Поиск города',
-                        'name' => 'cities_company',
-                        'data' => $cities,
-                        ])
+                'label' => 'Поиск города',
+                'name' => 'cities_company',
+                'data' => $cities,
+                ])
 
                 <div x-data="{ deletePhoto: false }">
                     <x-form.input-group label="Загрузить файл">
@@ -86,7 +84,7 @@
                         @endif
 
                         <div x-show="!deletePhoto">
-                            <x-form.input type="file" name="photo_company"/>
+                            <x-form.input type="file" name="photo_company" />
                         </div>
 
                         <x-form.error field="photo_company" />
@@ -140,11 +138,11 @@
                 </x-form.input-group>
 
                 @livewire('multiple-select', [
-                        'label' => 'Поиск города',
-                        'name' => 'city_id_vacancy',
-                        'data' => $cities_vacancy,
-                        'type' => 'radio'
-                        ])
+                'label' => 'Поиск города',
+                'name' => 'city_id_vacancy',
+                'data' => $cities_vacancy,
+                'type' => 'radio'
+                ])
 
                 <x-form.input-group label="Новые теги">
                     <x-form.input type="text" name="new_tags_vacancy" placeholder="Введите новые теги через запятую" value="{{ old('new_tags_vacancy') }}" />
@@ -152,10 +150,10 @@
                 </x-form.input-group>
 
                 @livewire('multiple-select', [
-                        'label' => 'Поск тега',
-                        'name' => 'tags_vacancy',
-                        'data' => $tags_vacancy,
-                        ])
+                'label' => 'Поск тега',
+                'name' => 'tags_vacancy',
+                'data' => $tags_vacancy,
+                ])
 
                 <x-form.input-group label="Зарплата от">
                     <x-form.input type="number" name="salary_start_vacancy" placeholder="Зарплата от" value="{{ old('salary_start_vacancy') }}" />

@@ -1,5 +1,5 @@
 <div>
-    <x-form.input-group label="Название компании или код(если хотите присоединиться к существующей компании)">
+    <x-form.input-group label="Название компании или код (если хотите присоединиться к существующей компании)">
         @if ($inputType === 'company')
         <x-form.input type="text" name="company" placeholder="Введите название компании" value="{{ $inputValue }}" wire:model="inputValue" />
         <x-form.error field="company" />
@@ -9,11 +9,7 @@
         @endif
     </x-form.input-group>
 
-    <x-button
-        class="w-full text-sm px-4 py-2 mt-3"
-        wire:click="switchInputType"
-        type="button"
-        type_component="button">
+    <x-button class="w-full text-sm px-4 py-2 mt-3" wire:click="switchInputType" type="button" type_component="button">
         @if ($inputType === 'company')
         Секретный код
         @else

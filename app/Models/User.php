@@ -60,16 +60,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Vacancy::class, 'user_vacancy_likes');
     }
 
-    public function isAdmin(): bool
-    {
-        return $this->type == 1;
-    }
-
-    public function isUser(): bool
-    {
-        return $this->type == 2;
-    }
-
     /**
      * The "booted" method of the model.
      */
@@ -78,18 +68,15 @@ class User extends Authenticatable
         static::deleting(function (User $user) {
             $company = $user->company;
 
-            if(!empty($company) && $company->users()->count() == 1){
+            if (!empty($company) && $company->users()->count() == 1) {
                 $company->delete();
             }
 
-            if(!empty($user->photo))
-            {
-                if(Storage::disk('public')->exists($user->photo))
-                {
+            if (!empty($user->photo)) {
+                if (Storage::disk('public')->exists($user->photo)) {
                     Storage::disk('public')->delete($user->photo);
                 }
             }
         });
     }
-
 }

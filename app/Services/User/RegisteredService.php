@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\User;
 
 use App\Models\Company;
@@ -17,14 +18,13 @@ class RegisteredService
      */
     public function registerUser(array $dataValidated): void
     {
-        $dataValidated['type'] = 2;
         $dataValidated['password'] = Hash::make($dataValidated['password']);
 
         DB::beginTransaction();
 
         try {
             $user = User::create($dataValidated);
-            // event(new Registered($user)); // Если нужно, включите
+            // event(new Registered($user)); 
             Auth::login($user, true);
 
             DB::commit();
@@ -43,7 +43,6 @@ class RegisteredService
      */
     public function registerAdmin(array $dataValidated): int
     {
-        $dataValidated['type'] = 1;
         $dataValidated['password'] = Hash::make($dataValidated['password']);
 
         DB::beginTransaction();

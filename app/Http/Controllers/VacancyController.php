@@ -69,7 +69,7 @@ class VacancyController extends Controller
     {
         $vacancy = $vacancy->load('city', 'company', 'tags');
 
-        $tags = Tag::all()->map(function($tag) use ($vacancy){
+        $tags = Tag::all()->map(function ($tag) use ($vacancy) {
             return [
                 'id' => $tag->id,
                 'name' => $tag->name,
@@ -88,13 +88,13 @@ class VacancyController extends Controller
         return view('pages.vacancy.show', compact('vacancy', 'tags', 'cities'));
     }
 
-    public function update(Vacancy $vacancy, UpdateVacancyRequest $request) : RedirectResponse
+    public function update(Vacancy $vacancy, UpdateVacancyRequest $request): RedirectResponse
     {
         $dataValidated = $request->validated();
 
-        try{
+        try {
             $this->vacancyService->updateVacancy($vacancy, $dataValidated);
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             Log::error('Ошибка при обновлении вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['error' => 'Ошибка при обновлении данных вакансии. Попробуйте снова.']);
@@ -103,11 +103,11 @@ class VacancyController extends Controller
         return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Данные вакансии успешно обновлены!');
     }
 
-    public function delete(Vacancy $vacancy) : RedirectResponse
+    public function delete(Vacancy $vacancy): RedirectResponse
     {
-        try{
+        try {
             $this->vacancyService->delete($vacancy);
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             Log::error('Ошибка при удалении вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['delete_vacancy' => 'Ошибка при удалении вакансии. Попробуйте снова.']);
@@ -116,21 +116,18 @@ class VacancyController extends Controller
         return redirect()->route('company.show', Auth::user()->company->id)->with('success', 'Вакансия успешно удалена!');
     }
 
-    public function store(Company $company, StoreVacancyRequest $request) : RedirectResponse
+    public function store(Company $company, StoreVacancyRequest $request): RedirectResponse
     {
         $dataValidated = $request->validated();
 
-        try{
+        try {
             $vacancy = $this->vacancyService->createVacancy($dataValidated);
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             Log::error('Ошибка при создании вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['error_vacancy' => 'Ошибка при создании новой вакансии. Попробуйте снова.']);
         }
 
         return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Вакансия успешно создана!');
-
-
-
     }
 }

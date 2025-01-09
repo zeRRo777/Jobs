@@ -18,10 +18,10 @@ class SessionController extends Controller
 
         $user = Auth::user();
 
-        if ($user->type == 1) {
+        if ($user->company !== null) {
 
             return redirect()->route('company.show', $user->company->id);
-        } elseif ($user->type == 2) {
+        } else {
             return redirect()->route('vacancies');
         }
     }

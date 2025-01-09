@@ -26,7 +26,7 @@ class AdminRegisteredRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'company' => ['required_without:secret_code', 'unique:companies,name'],
-            'secret_code' => ['required_without:company', 'exists:companies'],
+            'secret_code' => ['required_without:company', 'exists:companies, secret_code'],
             'password' => ['required', Password::defaults()],
         ];
     }

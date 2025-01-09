@@ -3,7 +3,7 @@
     <x-slot:header>Профиль</x-slot:header>
 
     @if (session('success'))
-        <x-success>{{ session('success') }}</x-success>
+    <x-success>{{ session('success') }}</x-success>
     @endif
 
     <div x-data="{ editing: @js($errors->hasAny(['name', 'email', 'profession', 'resume', 'new_cities', 'photo', 'delete_photo'])) }">
@@ -17,34 +17,34 @@
             <div>
                 <x-html.h3 class="mb-4">{{ $user->name }}</x-html.h3>
 
-                @if ($user->isAdmin())
-                    <x-html.h3 class="mb-4">Админ {{ $user->company->name }}</x-html.h3>
+                @if (!empty($user->company))
+                <x-html.h3 class="mb-4">Админ {{ $user->company->name }}</x-html.h3>
                 @endif
 
                 <x-html.h3 class="mb-4">
                     @if (!empty($user->profession))
-                        {{ $user->profession }}
+                    {{ $user->profession }}
                     @else
-                        Профессия: не указана
+                    Профессия: не указана
                     @endif
                 </x-html.h3>
 
                 <x-html.h3 class="mb-4">
                     @if ($user->cities->count() > 0)
-                        @if ($user->cities->count() == 1)
-                            Город: {{ $user->cities->first()->name }}
-                        @else
-                            Города:
-                            @foreach ($user->cities as $city)
-                                @if ($loop->last)
-                                    {{ $city->name }}.
-                                @else
-                                    {{ $city->name }},
-                                @endif
-                            @endforeach
-                        @endif
+                    @if ($user->cities->count() == 1)
+                    Город: {{ $user->cities->first()->name }}
                     @else
-                        Город: Не указан
+                    Города:
+                    @foreach ($user->cities as $city)
+                    @if ($loop->last)
+                    {{ $city->name }}.
+                    @else
+                    {{ $city->name }},
+                    @endif
+                    @endforeach
+                    @endif
+                    @else
+                    Город: Не указан
                     @endif
                 </x-html.h3>
 
@@ -52,15 +52,15 @@
             </div>
 
             @if (!empty($user->photo))
-                <img src="{{ asset('storage/' . $user->photo) }}" alt="Логотип {{ $user->name }}" class="h-52 w-52 mb-4">
+            <img src="{{ asset('storage/' . $user->photo) }}" alt="Логотип {{ $user->name }}" class="h-52 w-52 mb-4">
             @endif
         </div>
 
         @if (empty($user->resume))
-            <x-html.h3 class="mb-4">Резюме: Не указано</x-html.h3>
+        <x-html.h3 class="mb-4">Резюме: Не указано</x-html.h3>
         @else
-            <x-html.h3 class="mb-1">Резюме:</x-html.h3>
-            <x-html.p class="mb-4">{{ $user->resume }}</x-html.p>
+        <x-html.h3 class="mb-1">Резюме:</x-html.h3>
+        <x-html.p class="mb-4">{{ $user->resume }}</x-html.p>
         @endif
 
         <div x-show="editing">
@@ -95,33 +95,33 @@
                     <x-form.input type="text" name="new_cities" placeholder="Название новых городов" value="{{ old('new_cities') }}" />
                     <x-form.error field="new_cities" />
                 </x-form.input-group>
-            
+
                 @livewire('multiple-select', [
-                        'label' => 'Поиск города',
-                        'name' => 'cities',
-                        'data' => $cities,
-                        ])
+                'label' => 'Поиск города',
+                'name' => 'cities',
+                'data' => $cities,
+                ])
 
                 <div x-data="{ deletePhoto: false }">
                     <x-form.input-group label="Загрузить файл">
                         @if (!empty($user->photo))
                         <img src="{{ asset('storage/' . $user->photo) }}" alt="Логотип {{ $user->name }}" class="h-40 w-40 mb-2">
                         @endif
-                    
+
                         <div x-show="!deletePhoto">
-                            <x-form.input type="file" name="photo"/>
+                            <x-form.input type="file" name="photo" />
                         </div>
-                    
+
                         <x-form.error field="photo" />
                     </x-form.input-group>
-                
+
                     @if(!empty($user->photo))
                     <x-form.input-group label="Удалить текущее фото">
                         <input type="checkbox" name="delete_photo" x-model="deletePhoto">
                         <x-form.error field="delete_photo" />
                     </x-form.input-group>
                     @endif
-                </div>        
+                </div>
 
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Редактировать</x-button>
@@ -139,12 +139,12 @@
                 <x-form.input type="password" name="current_password" placeholder="Введите текущий пароль" />
                 <x-form.error field="current_password" />
             </x-form.input-group>
-     
+
             <x-form.input-group label="Новый пароль">
                 <x-form.input type="password" name="new_password" placeholder="Введите новый пароль" />
                 <x-form.error field="new_password" />
             </x-form.input-group>
-     
+
             <x-form.input-group label="Подтвердите новый пароль">
                 <x-form.input type="password" name="new_password_confirmation" placeholder="Подтвердите новый пароль" />
                 <x-form.error field="new_password_confirmation" />
@@ -155,29 +155,29 @@
             </div>
         </x-form.form>
 
-        @if ($user->isAdmin())
-            <div class="space-y-6  bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
-                <x-html.h3 class="mb-4">Генерация секретного кода</x-html.h3>
-                <x-html.p class="mb-4">
-                    После генерации вам нужно будет скопировать код и отправить новому сотруднику. После использования или новой генерации код удаляется.
-                </x-html.p>
-                <x-form.input-group label="Сгенерированный код">
-                    <div class="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded focus:outline-none focus:shadow-outline">
-                        @if (!empty($user->company->secret_code))
-                            {{ $user->company->secret_code }}
-                        @else
-                            Здесь будет находиться код    
-                        @endif
-                    </div>
-                    <x-form.error field="secret_code" />
-                </x-form.input-group>
-                <form action="{{ route('company.generateSecretCode') }}" method="POST">
-                    @csrf
-                    <div class="mt-6">
-                        <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
-                    </div>
-                </form>
-            </div>
+        @if (!empty($user->company))
+        <div class="space-y-6  bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
+            <x-html.h3 class="mb-4">Генерация секретного кода</x-html.h3>
+            <x-html.p class="mb-4">
+                После генерации вам нужно будет скопировать код и отправить новому сотруднику. После использования или новой генерации код удаляется.
+            </x-html.p>
+            <x-form.input-group label="Сгенерированный код">
+                <div class="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded focus:outline-none focus:shadow-outline">
+                    @if (!empty($user->company->secret_code))
+                    {{ $user->company->secret_code }}
+                    @else
+                    Здесь будет находиться код
+                    @endif
+                </div>
+                <x-form.error field="secret_code" />
+            </x-form.input-group>
+            <form action="{{ route('company.generateSecretCode') }}" method="POST">
+                @csrf
+                <div class="mt-6">
+                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
+                </div>
+            </form>
+        </div>
         @endif
     </div>
 

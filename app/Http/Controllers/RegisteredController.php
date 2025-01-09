@@ -31,7 +31,7 @@ class RegisteredController extends Controller
         } catch (\Exception $e) {
             Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать пользователя. Попробуйте снова.']);
-        } 
+        }
     }
 
     public function admin_create(): View

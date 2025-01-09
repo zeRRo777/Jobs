@@ -8,13 +8,14 @@ use Livewire\Component;
 class AddAdminCompanyInput extends Component
 {
 
-    public string $inputType = 'company';
+    public string $inputType;
 
     public string $inputValue = '';
 
-    public function mount(string $value): void
+    public function mount(string $value, string $inputType): void
     {
         $this->inputValue = $value;
+        $this->inputType = $inputType;
     }
 
     public function switchInputType(): void
