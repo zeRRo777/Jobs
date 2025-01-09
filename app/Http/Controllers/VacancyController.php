@@ -67,8 +67,6 @@ class VacancyController extends Controller
 
     public function show(Vacancy $vacancy): View
     {
-        $vacancy = $vacancy->load('city', 'company', 'tags');
-
         $tags = Tag::all()->map(function ($tag) use ($vacancy) {
             return [
                 'id' => $tag->id,
@@ -81,7 +79,7 @@ class VacancyController extends Controller
             return [
                 'id' => $city->id,
                 'name' => $city->name,
-                'active' => $city->id == $vacancy->city->id
+                'active' => $city->id == $vacancy->city?->id
             ];
         });
 

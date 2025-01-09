@@ -8,7 +8,14 @@
             {{ $vacancy->title }}
         </x-html.h3>
         <x-html.p class="mb-2">Компания: {{ $vacancy->company->name }}</x-html.p>
-        <x-html.p class="mb-2">Город: {{ $vacancy->city->name }}</x-html.p>
+        <x-html.p class="mb-2">Город:
+            @if (!empty($vacancy->city))
+            {{ $vacancy->city->name }}
+            @else
+            Не указан
+            @endif
+
+        </x-html.p>
         <x-html.p class="mb-2">
             Зарплата:
             @if (!empty($vacancy->salary_start) && !empty($vacancy->salary_end))

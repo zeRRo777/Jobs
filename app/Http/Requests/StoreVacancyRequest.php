@@ -32,20 +32,23 @@ class StoreVacancyRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'title_vacancy' => ['required', 'max:255', 'string',
-        Rule::unique('vacancies', 'title')->where(function (Builder $query){
-            return $query->where('company_id', $this->company_id_vacancy);
-        })
-        ],
-        'description_vacancy' => ['nullable', 'string', 'max:1000'],
-        'new_city_vacancy' => ['nullable', 'string', 'max:255', 'unique:cities,name'],
-        'company_id_vacancy' => ['required', 'exists:companies,id'],
-        'city_id_vacancy' => ['nullable', 'exists:cities,id'],
-        'new_tags_vacancy' => ['nullable', 'string', new UniqueTags],
-        'tags_vacancy' => ['nullable', 'array'],
-        'tags_vacancy.*' => ['string', 'exists:tags,id'],
-        'salary_start_vacancy' => ['nullable', 'integer', 'min:1'],
-        'salary_end_vacancy' => ['nullable', 'integer', 'min:1', 'gte:salary_start'],
+            'title_vacancy' => [
+                'required',
+                'max:255',
+                'string',
+                Rule::unique('vacancies', 'title')->where(function (Builder $query) {
+                    return $query->where('company_id', $this->company_id_vacancy);
+                })
+            ],
+            'description_vacancy' => ['nullable', 'string', 'max:1000'],
+            'new_city_vacancy' => ['nullable', 'string', 'max:255', 'unique:cities,name'],
+            'company_id_vacancy' => ['required', 'exists:companies,id'],
+            'city_id_vacancy' => ['nullable', 'exists:cities,id'],
+            'new_tags_vacancy' => ['nullable', 'string', new UniqueTags],
+            'tags_vacancy' => ['nullable', 'array'],
+            'tags_vacancy.*' => ['string', 'exists:tags,id'],
+            'salary_start_vacancy' => ['nullable', 'integer', 'min:1'],
+            'salary_end_vacancy' => ['nullable', 'integer', 'min:1', 'gte:salary_start'],
         ];
     }
 
