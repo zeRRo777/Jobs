@@ -26,7 +26,6 @@ class UserFactory extends Factory
             'profession' => fake()->jobTitle(),
             'remember_token' => Str::random(10),
             'resume' => fake()->paragraph(2),
-            'type' => 2,
             'company_id' => null,
         ];
     }
@@ -39,14 +38,5 @@ class UserFactory extends Factory
         return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
-    }
-
-    public function admin()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'type' => 1
-            ];
-        });
     }
 }

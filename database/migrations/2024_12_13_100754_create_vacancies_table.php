@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->foreignIdFor(Company::class)->constrained()->cascadeOnDelete();;
-            $table->foreignIdFor(City::class)->constrained();
+            $table->foreignIdFor(Company::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(City::class)->constrained()->nullOnDelete();
             $table->integer('salary_start')->nullable();
             $table->integer('salary_end')->nullable();
             $table->timestamps();

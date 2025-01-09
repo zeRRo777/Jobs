@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('profession')->nullable();
             $table->string('photo')->nullable();
             $table->text('resume')->nullable();
-            $table->integer('type');
             $table->foreignIdFor(Company::class)->nullable()->constrained()->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();

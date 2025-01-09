@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             $city = $cities->random(1)->first();
 
             //1 админ
-            $user = User::factory()->admin()->state(['company_id' => $company->id])->create();
+            $user = User::factory()->state(['company_id' => $company->id])->create();
 
             //добавляем админа к компании
             $user->cities()->attach($city);
