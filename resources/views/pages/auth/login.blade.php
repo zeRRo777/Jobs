@@ -5,7 +5,10 @@
     </x-slot:navigate_buttons>
     <x-slot:header>Авторизация</x-slot:header>
     @if (session('success'))
-        <x-success>{{ session('success') }}</x-success>
+    <x-success>{{ session('success') }}</x-success>
+    @endif
+    @if (session('error'))
+    <x-error>{{ session('error') }}</x-error>
     @endif
 
     <x-form.form action="{{ route('login.store') }}" method="POST" class="mx-auto">

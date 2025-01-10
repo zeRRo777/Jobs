@@ -137,6 +137,4 @@ class VacancyController extends Controller
 
         return view('pages.vacancy.likes', compact('vacancies'));
     }
-
-    public function like(Vacancy $vacancy) {}
 }

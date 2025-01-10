@@ -78,7 +78,9 @@
             @endif
         </x-html.p>
 
-        <x-button class="text-sm px-4 py-2" type="submit" type_component="button">Откликнуться</x-button>
+        @auth
+        <livewire:vacancy-like :vacancy="$vacancy" class="text-sm px-4 py-2" />
+        @endauth
 
         <div x-show="editing">
             <x-html.h2>Редактирование</x-html.h2>

@@ -51,6 +51,4 @@ Route::delete('/vacancies/{vacancy}', [VacancyController::class, 'delete'])->nam
 
 Route::post('/companies/{company}/vacancyCreate', [VacancyController::class, 'store'])->name('vacancy.store');
 
-Route::post('/vacancies/{vacancy}/like', [VacancyController::class, 'like'])->name('vacancy.like');
-
 Route::get('/vacancies/likes/{user}', [VacancyController::class, 'likes'])->name('vacancy.likes');
