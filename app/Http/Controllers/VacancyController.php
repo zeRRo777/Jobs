@@ -9,6 +9,7 @@ use App\Models\Vacancy;
 use App\Models\City;
 use App\Models\Tag;
 use App\Models\Company;
+use App\Models\User;
 use App\Services\Vacancy\VacancyFilterService;
 use App\Services\Vacancy\VacancyService;
 use Illuminate\Http\RedirectResponse;
@@ -128,4 +129,14 @@ class VacancyController extends Controller
 
         return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Вакансия успешно создана!');
     }
+
+    public function likes(User $user)
+    {
+
+        $vacancies = $user->likedVacancies()->paginate(10);
+
+        return view('pages.vacancy.likes', compact('vacancies'));
+    }
+
+    public function like(Vacancy $vacancy) {}
 }

@@ -6,7 +6,9 @@
         <x-menu.link :href="route('about')">О нас</x-menu.link>
         <x-menu.link :href="route('vacancies')">Вакансии</x-menu.link>
         <x-menu.link :href="route('companies')">Компании</x-menu.link>
-        <x-menu.link :href="route('vacancy.like')">Понравившиеся вакансии</x-menu.link>
+        @auth
+        <x-menu.link :href="route('vacancy.likes', Auth::user()->id)">Понравившиеся вакансии</x-menu.link>
+        @endauth
     </div>
 
     <div class="flex items-center space-x-4 mt-4 lg:mt-0">

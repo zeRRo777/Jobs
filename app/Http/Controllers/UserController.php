@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function index(User $user): View
     {
-        $cities = City::all()->map(function ($city) use ($user){
+        $cities = City::all()->map(function ($city) use ($user) {
             return [
                 'id' => $city->id,
                 'name' => $city->name,
@@ -54,7 +54,7 @@ class UserController extends Controller
         return redirect()->route('profile', $user->id)->with('success', 'Данные пользователя успешно обновлены!');
     }
 
-    public function changePassword(ChangePasswordRequest $request)
+    public function changePassword(ChangePasswordRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
@@ -62,35 +62,35 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-    
+
             $user->password = Hash::make($validatedData['new_password']);
             $user->save();
-    
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['password' => 'Не удалось изменить пароль. Пожалуйста, попробуйте снова.']);
         }
-    
+
         Auth::logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-    
+
         return redirect()->route('login')->with('success', 'Пароль успешно изменен!');
     }
 
-    public function delete(DeleteUserRequest $request)
+    public function delete(DeleteUserRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
         $user = Auth::user();
 
         Auth::logout();
-        
+
         $user->delete();
-           
+
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();

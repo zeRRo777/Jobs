@@ -7,32 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacancyController;
 use Illuminate\Support\Facades\Route;
 
-// Route::view('/', 'pages.index')->name('main');
-
-
-
-// Route::view('/register', 'pages.auth.register')->name('register');
-
-// Route::view('/admin/register', 'pages.auth.admin.register')->name('admin.register');
-
-
-
-// Route::view('/vacancies', 'pages.vacancy.index')->name('vacancies');
-
-// Route::view('/companies', 'pages.company.index')->name('companies');
-
-// Route::view('/companies/1', 'pages.company.show')->name('company.show');
-
-Route::view('/vacancies/likes/1', 'pages.vacancy.like')->name('vacancy.like');
-
-// Route::view('/vacancies/1', 'pages.vacancy.show')->name('vacancy.show');
-
-// Route::view('/profile/1', 'pages.profile')->name('profile');
-
-
-
-
-
 Route::get('/', [CompanyController::class, 'popular'])->name('main');
 
 Route::view('/about', 'pages.about')->name('about');
@@ -76,3 +50,7 @@ Route::delete('/profile/deleteAccount', [UserController::class, 'delete'])->name
 Route::delete('/vacancies/{vacancy}', [VacancyController::class, 'delete'])->name('vacancy.delete');
 
 Route::post('/companies/{company}/vacancyCreate', [VacancyController::class, 'store'])->name('vacancy.store');
+
+Route::post('/vacancies/{vacancy}/like', [VacancyController::class, 'like'])->name('vacancy.like');
+
+Route::get('/vacancies/likes/{user}', [VacancyController::class, 'likes'])->name('vacancy.likes');
