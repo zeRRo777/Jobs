@@ -18,11 +18,6 @@ class RegisteredController extends Controller
         $this->registeredService = $registeredService;
     }
 
-    public function create(): View
-    {
-        return view('pages.auth.register');
-    }
-
     public function store(RegisteredRequest $request): RedirectResponse
     {
         try {
@@ -32,11 +27,6 @@ class RegisteredController extends Controller
             Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать пользователя. Попробуйте снова.']);
         }
-    }
-
-    public function admin_create(): View
-    {
-        return view('pages.auth.admin.register');
     }
 
     public function admin_store(AdminRegisteredRequest $request): RedirectResponse
