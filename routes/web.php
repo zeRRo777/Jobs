@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth')->group(function () {
-    Route::controller('VacancyController')->group(function () {
+    Route::controller(VacancyController::class)->group(function () {
         Route::get('/vacancies', 'index')->name('vacancies')->withoutMiddleware('auth');
         Route::get('/vacancies/{vacancy}', 'show')->name('vacancy.show')->withoutMiddleware('auth');
         Route::post('/vacancies/{vacancy}/update',  'update')->name('vacancy.update');
@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/vacancies/likes/{user}', 'likes')->name('vacancy.likes');
     });
 
-    Route::controller('CompanyController')->group(function () {
+    Route::controller(CompanyController::class)->group(function () {
         Route::get('/companies', 'index')->name('companies')->withoutMiddleware('auth');
         Route::get('/', 'popular')->name('main')->withoutMiddleware('auth');
         Route::get('/companies/{company}', 'show')->name('company.show')->withoutMiddleware('auth');
@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/profile/generateSecretCode', 'generateSecretCode')->name('company.generateSecretCode');
     });
 
-    Route::controller('UserController')->group(function () {
+    Route::controller(UserController::class)->group(function () {
         Route::get('/profile/{user}', 'index')->name('profile');
         Route::post('/profile/{user}/update', 'update')->name('profile.update');
         Route::post('/profile/changePassword', 'changePassword')->name('profile.changePassword');
@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('guest')->group(function () {
 
-    Route::controller('RegisteredController')->group(function () {
+    Route::controller(RegisteredController::class)->group(function () {
         Route::post('/register', 'store')->name('register.store');
         Route::post('/admin/register', 'admin_store')->name('admin.register.store');
     });
