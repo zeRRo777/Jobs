@@ -11,17 +11,22 @@
     @endif
 
     <div x-data="{ editing: @js($errors->any()) }">
+
         <div class="flex justify-end mb-4 gap-3">
+            @can('update', $vacancy)
             <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
                 <span x-text="editing ? 'Продолжить просмотр' : 'Редактировать'"></span>
             </x-button>
+            @endcan
+            @can('delete', $vacancy)
             <form action="{{ route('vacancy.delete', $vacancy->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <x-button class="text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
             </form>
-
+            @endcan
         </div>
+
 
         <x-html.h3 class="mb-2">
             Зарплата:
@@ -78,9 +83,9 @@
             @endif
         </x-html.p>
 
-        @auth
+        @can('like', $vacancy)
         <livewire:vacancy-like :vacancy="$vacancy" class="text-sm px-4 py-2" />
-        @endauth
+        @endcan
 
         <div x-show="editing">
             <x-html.h2>Редактирование</x-html.h2>

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\User;
 use App\Models\Vacancy;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 class VacancyLike extends Component
@@ -32,11 +33,9 @@ class VacancyLike extends Component
 
     public function like()
     {
-        $user = Auth::user();
+        Gate::authorize('like', $this->vacancy);
 
-        if (!$user) {
-            return redirect()->route('login')->withErrors(['error' => 'Перед тем как откликнуться на вакансию, сначала авторизуйтесь!']);
-        }
+        $user = Auth::user();
 
         if (!$this->isLike) {
             $this->vacancy->userLiked()->attach($user->id);
@@ -47,11 +46,9 @@ class VacancyLike extends Component
 
     public function unlike()
     {
-        $user = Auth::user();
+        Gate::authorize('like', $this->vacancy);
 
-        if (!$user) {
-            return redirect()->route('login')->withErrors(['error' => 'Перед тем как отменить отклик на вакансию, сначала авторизуйтесь!']);
-        }
+        $user = Auth::user();
 
         if ($this->isLike) {
             $this->vacancy->userLiked()->detach($user->id);

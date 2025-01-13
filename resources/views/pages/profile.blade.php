@@ -155,7 +155,7 @@
             </div>
         </x-form.form>
 
-        @if (!empty($user->company))
+        @can('generateCode', $user->company)
         <div class="space-y-6  bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
             <x-html.h3 class="mb-4">Генерация секретного кода</x-html.h3>
             <x-html.p class="mb-4">
@@ -171,14 +171,14 @@
                 </div>
                 <x-form.error field="secret_code" />
             </x-form.input-group>
-            <form action="{{ route('company.generateSecretCode') }}" method="POST">
+            <form action="{{ route('company.generateSecretCode', $user->company->id) }}" method="POST">
                 @csrf
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
                 </div>
             </form>
         </div>
-        @endif
+        @endcan
     </div>
 
     <div x-data="{ deleteModal: false }" x-init="deleteModal = @json($errors->has('password_for_delete'))">

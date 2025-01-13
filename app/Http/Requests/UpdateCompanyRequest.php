@@ -31,11 +31,14 @@ class UpdateCompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_company' => ['required', 'max:255', 'string',
-            Rule::unique('companies')->ignore($this->company_id_company)
+            'name_company' => [
+                'required',
+                'max:255',
+                'string',
+                Rule::unique('companies')->ignore($this->company_id_company)
             ],
             'company_id_company' => ['required', 'exists:companies,id'],
-            'description_company' => ['required', 'string', 'max:1000'],
+            'description_company' => ['nullable', 'string', 'max:1000'],
             'new_cities_company' => ['nullable', 'string', new UniqueCities],
             'cities_company' => ['nullable', 'array'],
             'cities_company.*' => ['string', 'exists:cities,id'],

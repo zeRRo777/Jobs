@@ -32,8 +32,8 @@
         <x-vacancy.tag :tag="$tag" />
         @endforeach
     </div>
-    @auth
+    @can('like', $vacancy)
     <livewire:vacancy-like :vacancy="$vacancy" />
-    @endauth
+    @endcan
 </div>
 @endif

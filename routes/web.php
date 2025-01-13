@@ -12,9 +12,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(VacancyController::class)->group(function () {
         Route::get('/vacancies', 'index')->name('vacancies')->withoutMiddleware('auth');
         Route::get('/vacancies/{vacancy}', 'show')->name('vacancy.show')->withoutMiddleware('auth');
-        Route::post('/vacancies/{vacancy}/update',  'update')->name('vacancy.update');
-        Route::delete('/vacancies/{vacancy}', 'delete')->name('vacancy.delete');
-        Route::post('/companies/{company}/vacancyCreate',  'store')->name('vacancy.store');
+        Route::post('/vacancies/{vacancy}/update',  'update')->name('vacancy.update')->can('update', 'vacancy');
+        Route::delete('/vacancies/{vacancy}', 'delete')->name('vacancy.delete')->can('delete', 'vacancy');
+        Route::post('/companies/{company}/vacancyCreate',  'store')->name('vacancy.store')->can('createVacancy', 'company');
         Route::get('/vacancies/likes/{user}', 'likes')->name('vacancy.likes');
     });
 
@@ -22,8 +22,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/companies', 'index')->name('companies')->withoutMiddleware('auth');
         Route::get('/', 'popular')->name('main')->withoutMiddleware('auth');
         Route::get('/companies/{company}', 'show')->name('company.show')->withoutMiddleware('auth');
-        Route::post('/companies/{company}/update', 'update')->name('company.update');
-        Route::post('/profile/generateSecretCode', 'generateSecretCode')->name('company.generateSecretCode');
+        Route::post('/companies/{company}/update', 'update')->name('company.update')->can('update', 'company');
+        Route::post('/profile/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode')->can('generateCode', 'company');
     });
 
     Route::controller(UserController::class)->group(function () {

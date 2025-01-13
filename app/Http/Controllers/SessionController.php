@@ -20,12 +20,10 @@ class SessionController extends Controller
 
         if ($user->company !== null) {
 
-            $url = redirect()->route('company.show', $user->company->id);
+            return  redirect()->route('company.show', $user->company->id);
         } else {
-            $url =  redirect()->route('vacancies');
+            return redirect()->route('vacancies');
         }
-
-        return redirect()->intended($url);
     }
 
     public function destroy(Request $request): RedirectResponse
