@@ -84,7 +84,9 @@ class VacancyController extends Controller
             ];
         });
 
-        return view('pages.vacancy.show', compact('vacancy', 'tags', 'cities'));
+        $users = $vacancy->userLiked()->get();
+
+        return view('pages.vacancy.show', compact('vacancy', 'tags', 'cities', 'users'));
     }
 
     public function update(Vacancy $vacancy, UpdateVacancyRequest $request): RedirectResponse

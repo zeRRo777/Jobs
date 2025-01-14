@@ -91,7 +91,7 @@
         <livewire:vacancy-like :vacancy="$vacancy" class="text-sm px-4 py-2" />
         @endcan
 
-        <div x-show="editing">
+        <div x-show="editing" class="mb-4">
             <x-html.h2>Редактирование</x-html.h2>
             <x-form size="" method="POST" action="{{ route('vacancy.update', $vacancy->id) }}">
                 @csrf
@@ -148,6 +148,21 @@
 
             </x-form>
         </div>
+
+        <x-html.h2>Люди, откликнувшиеся на вакансию</x-html.h2>
+
+        @if ($users->count() > 0)
+        <x-user.list class="mb-5">
+            @foreach ($users as $user)
+            <x-user.card :user="$user" />
+            @endforeach
+        </x-user.list>
+        @else
+        <x-html.h2>Пока никто не откликнулся</x-html.h2>
+        @endif
+
+
+
     </div>
 
 </x-layouts.app>

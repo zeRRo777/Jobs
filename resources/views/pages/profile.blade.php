@@ -18,7 +18,7 @@
                 <x-html.h3 class="mb-4">{{ $user->name }}</x-html.h3>
 
                 @if (!empty($user->company))
-                <x-html.h3 class="mb-4">Админ {{ $user->company->name }}</x-html.h3>
+                <x-html.h3 class="mb-4">Админ <a href="{{ route('company.show', $user->company->id) }}">{{ $user->company->name }}</a></x-html.h3>
                 @endif
 
                 <x-html.h3 class="mb-4">
