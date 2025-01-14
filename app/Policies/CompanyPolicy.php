@@ -16,9 +16,9 @@ class CompanyPolicy
         return !empty($user->company) && $user->company->id === $company->id;
     }
 
-    public function generateCode(User $user, Company $company): bool
+    public function generateCode(User $user): bool
     {
-        return !empty($user->company) && $user->company->id === $company->id;
+        return !empty($user->company);
     }
 
     public function createVacancy(User $user, Company $company): bool

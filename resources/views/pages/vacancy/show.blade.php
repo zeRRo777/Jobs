@@ -68,7 +68,11 @@
         @endif
 
         <div class="flex flex-row items-center space-x-4 mb-2">
-            <x-html.h3>Компания: {{ $vacancy->company->name }}</x-html.h3>
+            <x-html.h3>
+                <a wire:navigate href="{{ route('company.show', $vacancy->company->id) }}">
+                    Компания: {{ $vacancy->company->name }}
+                </a>
+            </x-html.h3>
             @if (!empty($vacancy->company->photo))
             <img src="{{ asset('storage/' . $vacancy->company->photo) }}" alt="Логотип {{ $vacancy->company->name }}" class="h-10 w-10 mb-2">
             @endif

@@ -171,7 +171,7 @@
                 </div>
                 <x-form.error field="secret_code" />
             </x-form.input-group>
-            <form action="{{ route('company.generateSecretCode', $user->company->id) }}" method="POST">
+            <form action="{{ route('company.generateSecretCode', [$user->id, $user->company->id]) }}" method="POST">
                 @csrf
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>

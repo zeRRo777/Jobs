@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\City;
 use App\Models\Company;
 use App\Models\Tag;
+use App\Models\User;
 use App\Services\Company\CompanyFilterService;
 use App\Services\Company\CompanyService;
 use Illuminate\Http\RedirectResponse;
@@ -67,7 +68,7 @@ class CompanyController extends Controller
 
         $vacancies = $company->vacancies()->with('tags', 'company', 'city')->orderBy('created_at', 'desc')->paginate(3);
 
-        $cities = City::all()->map(function ($city) use ($company){
+        $cities = City::all()->map(function ($city) use ($company) {
             return [
                 'id' => $city->id,
                 'name' => $city->name,
@@ -75,7 +76,7 @@ class CompanyController extends Controller
             ];
         });
 
-        $tags_vacancy = Tag::all()->map(function($tag) {
+        $tags_vacancy = Tag::all()->map(function ($tag) {
             return [
                 'id' => $tag->id,
                 'name' => $tag->name,
@@ -109,7 +110,7 @@ class CompanyController extends Controller
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
     }
 
-    public function generateSecretCode(Request $request)
+    public function generateSecretCode()
     {
         $user = Auth::user();
 

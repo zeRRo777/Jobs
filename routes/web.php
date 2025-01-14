@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', 'popular')->name('main')->withoutMiddleware('auth');
         Route::get('/companies/{company}', 'show')->name('company.show')->withoutMiddleware('auth');
         Route::post('/companies/{company}/update', 'update')->name('company.update')->can('update', 'company');
-        Route::post('/profile/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode')->can('generateCode', 'company');
+        Route::post('/profile/{user}/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode')->can('generateCode', 'App\Models\Company');
     });
 
     Route::controller(UserController::class)->group(function () {

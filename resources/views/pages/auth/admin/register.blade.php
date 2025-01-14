@@ -18,7 +18,7 @@
             <x-form.error field="email" />
         </x-form.input-group>
 
-        @livewire('add-admin-company-input', ['value' => old('company') ?? old('secret_code') ?? '', 'inputType' => old('secret_code') ? 'secret_code' : 'company'])
+        @livewire('add-admin-company-input', ['value' => old('secret_code') ?? old('company') ?? '', 'inputType' => old('secret_code') ? 'secret_code' : 'company'])
 
         <x-form.input-group label="Пароль">
             <x-form.input type="password" name="password" placeholder="Введите пароль" value="" />
