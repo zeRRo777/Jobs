@@ -97,4 +97,9 @@ class UserController extends Controller
 
         return redirect()->route('register')->with('success', 'Аккаунт был успешно удален!');
     }
+
+    public function show(User $user): View
+    {
+        return view('pages.users.show', compact('user'));
+    }
 }
