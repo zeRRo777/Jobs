@@ -111,7 +111,7 @@ class CompanyController extends Controller
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
     }
 
-    public function generateSecretCode(User $user, Company $company)
+    public function generateSecretCode(User $user, Company $company): RedirectResponse
     {
 
         Gate::authorize('generateCode', $company);
@@ -134,6 +134,30 @@ class CompanyController extends Controller
 
             return redirect()->route('profile', $user->id)
                 ->withErrors(['secret_code' => 'Не удалось сгенерировать секретный код. Попробуйте снова.']);
+        }
+    }
+
+    public function deleteSecretCode(User $user, Company $company)
+    {
+        Gate::authorize('generateCode', $company);
+
+        $user = Auth::user();
+
+        try {
+            DB::beginTransaction();
+
+            $user->company->update(['secret_code' => null]);
+
+            DB::commit();
+
+            return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно удален!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Ошибка удаления секретного кода: ' . $e->getMessage(), ['exception' => $e]);
+
+            return redirect()->route('profile', $user->id)
+                ->withErrors(['secret_code' => 'Не удалось удалить секретный код. Попробуйте снова.']);
         }
     }
 }

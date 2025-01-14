@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/companies/{company}', 'show')->name('company.show')->withoutMiddleware('auth');
         Route::post('/companies/{company}/update', 'update')->name('company.update')->can('update', 'company');
         Route::post('/profile/{user}/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode');
+        Route::delete('/profile/{user}/generateSecretCode/{company}', 'deleteSecretCode')->name('company.generateSecretCode.delete');
     });
 
     Route::controller(UserController::class)->group(function () {

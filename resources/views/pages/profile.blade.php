@@ -174,7 +174,14 @@
             <form action="{{ route('company.generateSecretCode', ['user' => $user->id, 'company' => $user->company->id]) }}" method="POST">
                 @csrf
                 <div class="mt-6">
-                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
+                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Генерировать</x-button>
+                </div>
+            </form>
+            <form action="{{ route('company.generateSecretCode.delete', ['user' => $user->id, 'company' => $user->company->id]) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="mt-6">
+                    <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Удалить</x-button>
                 </div>
             </form>
         </div>
