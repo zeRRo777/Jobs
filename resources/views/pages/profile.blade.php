@@ -171,7 +171,7 @@
                 </div>
                 <x-form.error field="secret_code" />
             </x-form.input-group>
-            <form action="{{ route('company.generateSecretCode', [$user->id, $user->company->id]) }}" method="POST">
+            <form action="{{ route('company.generateSecretCode', ['user' => $user->id, 'company' => $user->company->id]) }}" method="POST">
                 @csrf
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Сменить</x-button>
@@ -183,7 +183,7 @@
 
     <div x-data="{ deleteModal: false }" x-init="deleteModal = @json($errors->has('password_for_delete'))">
         <div class="flex flex-col md:flex-row gap-6">
-            <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="{{ route('logout') }}">
+            <form class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10" method="POST" action="{{ route('logout', $user->id) }}">
                 @csrf
                 @method('DELETE')
                 <x-html.h3 class="mb-4">Выйти из аккаунта</x-html.h3>
@@ -205,7 +205,7 @@
                 <div class="relative bg-gray-800 p-8 rounded-lg shadow-lg">
                     <x-html.h3 class="mb-4">Предупреждение</x-html.h3>
                     <x-html.p class="mb-4">Это действие необратимо. Вы уверены, что хотите удалить аккаунт?</x-html.p>
-                    <form method="POST" action="{{ route('profile.deleteAccount') }}" class="space-y-4">
+                    <form method="POST" action="{{ route('profile.deleteAccount', $user->id) }}" class="space-y-4">
                         @method('DELETE')
                         @csrf
 

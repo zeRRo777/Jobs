@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -110,8 +111,11 @@ class CompanyController extends Controller
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
     }
 
-    public function generateSecretCode()
+    public function generateSecretCode(User $user, Company $company)
     {
+
+        Gate::authorize('generateCode', $company);
+
         $user = Auth::user();
 
         try {

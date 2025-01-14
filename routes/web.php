@@ -15,7 +15,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/vacancies/{vacancy}/update',  'update')->name('vacancy.update')->can('update', 'vacancy');
         Route::delete('/vacancies/{vacancy}', 'delete')->name('vacancy.delete')->can('delete', 'vacancy');
         Route::post('/companies/{company}/vacancyCreate',  'store')->name('vacancy.store')->can('createVacancy', 'company');
-        Route::get('/vacancies/likes/{user}', 'likes')->name('vacancy.likes');
+        Route::get('/vacancies/likes/{user}', 'likes')->name('vacancy.likes')->can('base', 'user');
     });
 
     Route::controller(CompanyController::class)->group(function () {
@@ -23,15 +23,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/', 'popular')->name('main')->withoutMiddleware('auth');
         Route::get('/companies/{company}', 'show')->name('company.show')->withoutMiddleware('auth');
         Route::post('/companies/{company}/update', 'update')->name('company.update')->can('update', 'company');
-        Route::post('/profile/{user}/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode')->can('generateCode', 'App\Models\Company');
+        Route::post('/profile/{user}/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode');
     });
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/profile/{user}', 'index')->name('profile');
-        Route::post('/profile/{user}/update', 'update')->name('profile.update');
-        Route::post('/profile/changePassword', 'changePassword')->name('profile.changePassword');
-        Route::delete('/profile/deleteAccount', 'delete')->name('profile.deleteAccount');
-        Route::get('/users/{user}', 'show')->name('user.show');
+        Route::get('/profile/{user}', 'index')->name('profile')->can('base', 'user');
+        Route::post('/profile/{user}/update', 'update')->name('profile.update')->can('base', 'user');
+        Route::post('/profile/{user}/changePassword', 'changePassword')->name('profile.changePassword')->can('base', 'user');
+        Route::delete('/profile/{user}/deleteAccount', 'delete')->name('profile.deleteAccount')->can('base', 'user');
+        Route::get('/users/{user}', 'show')->name('user.show')->can('admin', 'user');
     });
 
     Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');

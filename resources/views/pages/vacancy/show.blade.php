@@ -149,8 +149,8 @@
             </x-form>
         </div>
 
+        @can('viewUsersLiked', $vacancy)
         <x-html.h2>Люди, откликнувшиеся на вакансию</x-html.h2>
-
         @if ($users->count() > 0)
         <x-user.list class="mb-5">
             @foreach ($users as $user)
@@ -160,9 +160,7 @@
         @else
         <x-html.h2>Пока никто не откликнулся</x-html.h2>
         @endif
-
-
-
+        @endcan
     </div>
 
 </x-layouts.app>

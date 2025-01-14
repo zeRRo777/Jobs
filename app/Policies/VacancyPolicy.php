@@ -29,4 +29,9 @@ class VacancyPolicy
     {
         return !(!empty($user->company) && $user->company->id === $vacancy->company_id);
     }
+
+    public function viewUsersLiked(User $user, Vacancy $vacancy)
+    {
+        return !empty($user->company) && $user->company->id === $vacancy->company_id;
+    }
 }
