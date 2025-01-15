@@ -68,7 +68,7 @@
 
             <x-form size="" class="mb-10" action="{{ route('profile.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
+                @method('PUT')
                 <x-form.input-group label="ФИО">
                     <x-form.input type="text" name="name" placeholder="Введите фио" value="{{ $user->name }}" />
                     <x-form.error field="name" />
@@ -134,6 +134,7 @@
     <div class="flex flex-col md:flex-row gap-6">
         <x-form.form class="mb-10" size="w-full" action="{{ route('profile.changePassword', $user->id) }}" method="POST">
             @csrf
+            @method('PATCH')
             <x-html.h3 class="mb-4">Смена пароля</x-html.h3>
             <x-form.input-group label="Текущий пароль">
                 <x-form.input type="password" name="current_password" placeholder="Введите текущий пароль" />
@@ -173,6 +174,7 @@
             </x-form.input-group>
             <form action="{{ route('company.generateSecretCode', ['user' => $user->id, 'company' => $user->company->id]) }}" method="POST">
                 @csrf
+                @method('PATCH')
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Генерировать</x-button>
                 </div>

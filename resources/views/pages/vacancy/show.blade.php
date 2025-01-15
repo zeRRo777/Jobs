@@ -95,6 +95,7 @@
             <x-html.h2>Редактирование</x-html.h2>
             <x-form size="" method="POST" action="{{ route('vacancy.update', $vacancy->id) }}">
                 @csrf
+                @method('PUT')
                 <x-form.input-group label="Название вакансии">
                     <x-form.input type="text" name="title" placeholder="Название вакансии" value="{{ $vacancy->title }}" />
                     <x-form.error field="title" />

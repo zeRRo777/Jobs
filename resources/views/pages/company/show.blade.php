@@ -56,6 +56,7 @@
             <x-html.h2>Редактирование</x-html.h2>
             <x-form size="" method="POST" action="{{ route('company.update', $company->id) }}" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 <x-form.input-group label="Название">
                     <x-form.input type="text" name="name_company" placeholder="Название компании" value="{{ $company->name }}" />
                     <x-form.error field="name_company" />

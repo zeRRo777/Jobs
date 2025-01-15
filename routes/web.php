@@ -12,7 +12,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(VacancyController::class)->group(function () {
         Route::get('/vacancies', 'index')->name('vacancies')->withoutMiddleware('auth');
         Route::get('/vacancies/{vacancy}', 'show')->name('vacancy.show')->withoutMiddleware('auth');
-        Route::post('/vacancies/{vacancy}/update',  'update')->name('vacancy.update')->can('update', 'vacancy');
+        Route::put('/vacancies/{vacancy}/update',  'update')->name('vacancy.update')->can('update', 'vacancy');
         Route::delete('/vacancies/{vacancy}', 'delete')->name('vacancy.delete')->can('delete', 'vacancy');
         Route::post('/companies/{company}/vacancyCreate',  'store')->name('vacancy.store')->can('createVacancy', 'company');
         Route::get('/vacancies/likes/{user}', 'likes')->name('vacancy.likes')->can('base', 'user');
@@ -22,15 +22,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/companies', 'index')->name('companies')->withoutMiddleware('auth');
         Route::get('/', 'popular')->name('main')->withoutMiddleware('auth');
         Route::get('/companies/{company}', 'show')->name('company.show')->withoutMiddleware('auth');
-        Route::post('/companies/{company}/update', 'update')->name('company.update')->can('update', 'company');
-        Route::post('/profile/{user}/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode');
+        Route::put('/companies/{company}/update', 'update')->name('company.update')->can('update', 'company');
+        Route::patch('/profile/{user}/generateSecretCode/{company}', 'generateSecretCode')->name('company.generateSecretCode');
         Route::delete('/profile/{user}/generateSecretCode/{company}', 'deleteSecretCode')->name('company.generateSecretCode.delete');
     });
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/profile/{user}', 'index')->name('profile')->can('base', 'user');
-        Route::post('/profile/{user}/update', 'update')->name('profile.update')->can('base', 'user');
-        Route::post('/profile/{user}/changePassword', 'changePassword')->name('profile.changePassword')->can('base', 'user');
+        Route::put('/profile/{user}/update', 'update')->name('profile.update')->can('base', 'user');
+        Route::patch('/profile/{user}/changePassword', 'changePassword')->name('profile.changePassword')->can('base', 'user');
         Route::delete('/profile/{user}/deleteAccount', 'delete')->name('profile.deleteAccount')->can('base', 'user');
         Route::get('/users/{user}', 'show')->name('user.show')->can('admin', 'user');
     });
