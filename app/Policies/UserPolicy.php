@@ -16,4 +16,9 @@ class UserPolicy
     {
         return $currenUser->id === $user->id;
     }
+
+    public function viewAllUsers(User $currentUser)
+    {
+        return !empty($currentUser->company);
+    }
 }

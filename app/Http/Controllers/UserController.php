@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\DeleteUserRequest;
+use App\Http\Requests\SmartFilterUsersRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\City;
 use App\Models\User;
+use App\Services\User\UserFilterService;
 use App\Services\User\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -20,10 +22,12 @@ class UserController extends Controller
 {
 
     protected $userService;
+    protected $userFilterService;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, UserFilterService $userFilterService)
     {
         $this->userService = $userService;
+        $this->userFilterService = $userFilterService;
     }
 
     public function index(User $user): View
@@ -102,5 +106,24 @@ class UserController extends Controller
     public function show(User $user): View
     {
         return view('pages.users.show', compact('user'));
+    }
+
+    public function all(SmartFilterUsersRequest $request)
+    {
+        $this->userFilterService->setData($request->validated());
+
+        $query = $this->userFilterService->applyFilters();
+
+        $validatedData = $this->userFilterService->getData();
+
+        $users = $query->where('id', '!=', auth()->id())
+            ->paginate(10)
+            ->appends($request->query());
+
+        $cities = $this->userFilterService->getCitiesFilterData();
+
+        $professions = $this->userFilterService->getProfessionFilterData();
+
+        return view('pages.users.index', compact('users', 'cities', 'professions'));
     }
 }

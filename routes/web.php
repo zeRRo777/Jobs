@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/profile/{user}/changePassword', 'changePassword')->name('profile.changePassword')->can('base', 'user');
         Route::delete('/profile/{user}/deleteAccount', 'delete')->name('profile.deleteAccount')->can('base', 'user');
         Route::get('/users/{user}', 'show')->name('user.show')->can('admin', 'user');
+        Route::get('/users', 'all')->name('users')->can('viewAllUsers', 'App\Models\User');
     });
 
     Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');

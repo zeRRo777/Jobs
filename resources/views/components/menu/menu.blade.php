@@ -8,6 +8,9 @@
         <x-menu.link :href="route('companies')">Компании</x-menu.link>
         @auth
         <x-menu.link :href="route('vacancy.likes', Auth::user()->id)">Понравившиеся вакансии</x-menu.link>
+        @can('viewAllUsers', 'App\Models\User')
+        <x-menu.link :href="route('users')">Все пользователи</x-menu.link>
+        @endcan
         @endauth
     </div>
 
