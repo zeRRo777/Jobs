@@ -134,7 +134,6 @@ class VacancyController extends Controller
 
     public function likes(User $user)
     {
-
         $vacancies = $user->likedVacancies()->paginate(10);
 
         return view('pages.vacancy.likes', compact('vacancies'));

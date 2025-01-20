@@ -32,4 +32,9 @@ class Vacancy extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function offeredUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_vacancy_offers');
+    }
 }

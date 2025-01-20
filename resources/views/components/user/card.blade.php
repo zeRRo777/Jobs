@@ -1,8 +1,10 @@
-@props(['user' => null])
+@props(['user' => null, 'vacancy' => null])
 
 @if (!empty($user))
-<a wire:navigate href="{{ route('user.show', $user->id) }}" class="block">
-    <div class="relative bg-gray-800 rounded-lg shadow hover:shadow-xl transform hover:scale-105 transition duration-300 h-full overflow-hidden">
+
+
+<div class="relative bg-gray-800 rounded-lg shadow hover:shadow-xl transform hover:scale-105 transition duration-300 h-full overflow-hidden">
+    <a wire:navigate href="{{ route('user.show', $user->id) }}" class="block">
         @if (!empty($user->photo))
         <x-logo src="{{ asset('storage/' . $user->photo) }}" class="w-full h-48 object-cover" alt="Логотип {{ $user->name }}" />
         @else
@@ -16,6 +18,13 @@
             @endif
             <x-html.p class="mb-2">Почта: {{ $user->email }}</x-html.p>
         </div>
-    </div>
-</a>
+    </a>
+    @if(!empty($vacancy))
+    @can('offer', $vacancy)
+    <livewire:offer-job :vacancy="$vacancy" :user="$user" />
+    @endcan
+    @endif
+</div>
+
+
 @endif

@@ -10,6 +10,7 @@
     <x-success>{{ session('delete_vacancy') }}</x-success>
     @endif
 
+
     <div x-data="{ editing: @js($errors->any()) }">
 
         <div class="flex justify-end mb-4 gap-3">
@@ -155,7 +156,7 @@
         @if ($users->count() > 0)
         <x-user.list class="mb-5">
             @foreach ($users as $user)
-            <x-user.card :user="$user" />
+            <x-user.card :user="$user" :vacancy="$vacancy" />
             @endforeach
         </x-user.list>
         @else

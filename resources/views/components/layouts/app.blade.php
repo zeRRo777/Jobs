@@ -19,7 +19,6 @@
         @endif
     </x-nav>
 
-
     <!-- Заголовок страницы -->
     @if (!empty($header))
     <header class="container mx-auto px-4 text-center my-8">
@@ -29,6 +28,7 @@
 
     <!-- Основной контент -->
     <main class="container mx-auto px-4 flex-grow mb-10">
+        <x-notifications />
         {{ $slot }}
     </main>
 

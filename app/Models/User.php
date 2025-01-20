@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Vacancy::class, 'user_vacancy_likes');
     }
 
+    public function offeredVacancies(): BelongsToMany
+    {
+        return $this->belongsToMany(Vacancy::class, 'user_vacancy_offers');
+    }
+
     /**
      * The "booted" method of the model.
      */
