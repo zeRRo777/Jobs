@@ -6,8 +6,11 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\SmartFilterUsersRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserOffersRequest;
+use App\Mail\OfferVacancy;
 use App\Models\City;
 use App\Models\User;
+use App\Models\Vacancy;
 use App\Services\User\UserFilterService;
 use App\Services\User\UserService;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -105,7 +109,18 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
-        return view('pages.users.show', compact('user'));
+
+        $vacancies = Vacancy::where('company_id', '=', Auth::user()->company->id)->get()
+            ->map(function ($vacancy) use ($user) {
+                return [
+                    'id' => $vacancy->id,
+                    'title' => $vacancy->title,
+                    'isLiked' => $vacancy->userLiked->contains($user),
+                    'isOffered' => $vacancy->offeredUsers->contains($user)
+                ];
+            });
+
+        return view('pages.users.show', compact('user', 'vacancies'));
     }
 
     public function all(SmartFilterUsersRequest $request)
@@ -125,5 +140,29 @@ class UserController extends Controller
         $professions = $this->userFilterService->getProfessionFilterData();
 
         return view('pages.users.index', compact('users', 'cities', 'professions'));
+    }
+
+    public function offers(User $user, UserOffersRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        foreach ($validatedData['vacancies'] as $vacancyId) {
+            $vacancy = Vacancy::findOrFail($vacancyId);
+
+            Gate::authorize('offer', $vacancy);
+
+            try {
+                Mail::to($user)->send(new OfferVacancy($vacancy, $user, Auth::user()));
+
+                if (!$vacancy->offeredUsers->contains($user)) {
+                    $vacancy->offeredUsers()->attach($user->id);
+                }
+            } catch (\Exception $e) {
+                Log::error('Ошибка при отправке письма: ' . $e->getMessage());
+                return redirect()->route('user.show', $user->id)->withErrors(['error' => 'Произошла ошибка при отправке письма. Попробуйте еще раз!']);
+            }
+        }
+
+        return redirect()->route('user.show', $user->id)->with('success', 'Письма о предложении работы успешно отправлены!');
     }
 }

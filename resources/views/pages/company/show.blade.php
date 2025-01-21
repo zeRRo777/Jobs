@@ -8,7 +8,8 @@
 
     <div x-data="{
         editing: @js($errors->hasAny(['name_company', 'company_id_company', 'description_company', 'new_cities_company', 'cities_company', 'photo_company', 'delete_photo_company', 'error_company'])),
-        add_vacancy: @js($errors->hasAny(['title_vacancy', 'description_vacancy', 'new_city_vacancy', 'company_id_vacancy', 'city_id_vacancy', 'new_tags_vacancy', 'tags_vacancy', 'salary_start_vacancy', 'salary_end_vacancy', 'error_vacancy']))
+        add_vacancy: @js($errors->hasAny(['title_vacancy', 'description_vacancy', 'new_city_vacancy', 'company_id_vacancy', 'city_id_vacancy', 'new_tags_vacancy', 'tags_vacancy', 'salary_start_vacancy', 'salary_end_vacancy', 'error_vacancy']) 
+        || request()->has('add_vacancy') )
     }">
         @can('update', $company)
         <div class="flex justify-end mb-4">
@@ -115,7 +116,7 @@
         @can('createVacancy', $company)
         <div class="flex justify-end mb-4">
             <x-button @click="add_vacancy = !add_vacancy" class="text-sm px-4 py-2" type="button" type_component="button">
-                <span x-text="add_vacancy ? 'Продолжить создание' : 'Создать'"></span>
+                <span x-text="add_vacancy ? 'Продолжить просмотр' : 'Создать'"></span>
             </x-button>
         </div>
         @endcan
