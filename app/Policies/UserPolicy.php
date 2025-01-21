@@ -21,4 +21,11 @@ class UserPolicy
     {
         return !empty($currentUser->company);
     }
+
+    public function viewUserDetail(User $currentUser, User $user): bool
+    {
+        return !empty($currentUser->company)
+            && ($currentUser->id !== $user->id)
+            && ($user->show || $user->likedVacancies->intersect($currentUser->company->vacancies)->isNotEmpty());
+    }
 }

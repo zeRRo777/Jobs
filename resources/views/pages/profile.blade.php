@@ -63,6 +63,8 @@
         <x-html.p class="mb-4">{{ $user->resume }}</x-html.p>
         @endif
 
+        @livewire('show-your-profile')
+
         <div x-show="editing">
             <x-html.h2>Редактирование</x-html.h2>
 

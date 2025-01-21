@@ -132,6 +132,7 @@ class UserController extends Controller
         $validatedData = $this->userFilterService->getData();
 
         $users = $query->where('id', '!=', auth()->id())
+            ->where('show', '=', true)
             ->paginate(10)
             ->appends($request->query());
 
