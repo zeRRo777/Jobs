@@ -28,4 +28,9 @@ class UserPolicy
             && ($currentUser->id !== $user->id)
             && ($user->show || $user->likedVacancies->intersect($currentUser->company->vacancies)->isNotEmpty());
     }
+
+    public function deleteUserCompany(User $user)
+    {
+        return !empty($user->company);
+    }
 }

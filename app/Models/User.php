@@ -83,5 +83,19 @@ class User extends Authenticatable
                 }
             }
         });
+
+        static::updating(function (User $user) {
+
+            if ($user->isDirty('company_id')) {
+                if ($user->company_id === null) {
+
+                    $company = Company::find($user->getOriginal('company_id'));
+
+                    if (!empty($company) && $company->users()->count() < 2) {
+                        $company->delete();
+                    }
+                }
+            }
+        });
     }
 }

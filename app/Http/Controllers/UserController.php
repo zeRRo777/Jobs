@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\DeleteUserCompanyRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\SmartFilterUsersRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserOffersRequest;
 use App\Mail\OfferVacancy;
 use App\Models\City;
+use App\Models\Company;
 use App\Models\User;
 use App\Models\Vacancy;
 use App\Services\User\UserFilterService;
@@ -109,7 +111,6 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
-
         $vacancies = Vacancy::where('company_id', '=', Auth::user()->company->id)->get()
             ->map(function ($vacancy) use ($user) {
                 return [
@@ -165,5 +166,28 @@ class UserController extends Controller
         }
 
         return redirect()->route('user.show', $user->id)->with('success', 'Письма о предложении работы успешно отправлены!');
+    }
+
+    public function deleteCompany(DeleteUserCompanyRequest $request)
+    {
+
+        $request->validated();
+
+        $user = Auth::user();
+
+        Gate::authorize('deleteUserCompany', $user);
+
+        try {
+
+            $user->company_id = null;
+
+            $user->save();
+        } catch (\Exception $e) {
+
+            Log::error('Ошибка при удалении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
+            return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при удалении компании! Попробуйте еще раз!']);
+        }
+
+        return redirect()->route('profile', $user->id)->with('success', 'Компания успешно удалена!');
     }
 }

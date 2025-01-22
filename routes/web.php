@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{user}', 'show')->name('user.show')->can('viewUserDetail', 'user');
         Route::get('/users', 'all')->name('users')->can('viewAllUsers', 'App\Models\User');
         Route::post('/users/{user}/offers', 'offers')->name('user.offers')->can('admin', 'user');
+        Route::delete('/users/{user}/company', 'deleteCompany')->name('user.deleteCompany');
     });
 
     Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');

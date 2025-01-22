@@ -238,5 +238,46 @@
         </div>
     </div>
 
+    @can('deleteUserCompany', 'App\Models\User')
+    <div x-data="{ deleteModalCompany: false }" x-init="deleteModalCompany = @json($errors->has('password_for_delete_company'))">
+        <div class="flex flex-col md:flex-row gap-6">
+
+            <div class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
+                <x-html.h3 class="mb-4">Перестать быть админом</x-html.h3>
+                <div class="mt-6">
+                    <x-button class="w-full text-sm px-4 py-2" type="button" type_component="button" @click="deleteModalCompany = true">
+                        Перестать
+                    </x-button>
+                </div>
+            </div>
+            <div x-show="deleteModalCompany" class="fixed inset-0 flex items-center justify-center">
+                <div class="absolute inset-0 bg-black opacity-50"></div>
+                <div class="relative bg-gray-800 p-8 rounded-lg shadow-lg md:max-w-xl">
+                    <x-html.h3 class="mb-4">Предупреждение</x-html.h3>
+                    <x-html.p class="mb-4">
+                        Это действие необратимо. Вы уверены, что хотите перестать быть админом? Если вы единсвенный администратор, то компания и все ее вакансии удалятся!
+                    </x-html.p>
+                    <form method="POST" action="{{ route('user.deleteCompany', $user->id) }}" class="space-y-4">
+                        @method('DELETE')
+                        @csrf
+
+                        <x-form.input-group label="Текущий пароль">
+                            <x-form.input type="password" name="password_for_delete_company" placeholder="Введите текущий пароль" />
+                            <x-form.error field="password_for_delete_company" />
+                        </x-form.input-group>
+
+                        <x-button class="w-full text-sm px-4 py-2" type="button" type_component="button" @click="deleteModalCompany = false">
+                            Отмена
+                        </x-button>
+
+                        <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">
+                            Удалить
+                        </x-button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endcan
 
 </x-layouts.app>
