@@ -41,7 +41,16 @@ class VacancyController extends Controller
 
         $validatedData = $this->vacancyFilterService->getData();
 
+        $sortColumn = 'created_at';
+        $sortDirection = 'desc';
+
+        if ($request->has('sort_salary_start')) {
+            $sortColumn = 'salary_start';
+            $sortDirection = $request->get('sort_salary_start');
+        }
+
         $vacancies = $query->with(['tags', 'city', 'company'])
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(10)
             ->appends($request->query());
 

@@ -6,7 +6,6 @@
     <div class="flex flex-col lg:flex-row lg:space-x-8 mt-5">
         <!-- Фильтр -->
         <div class="w-full lg:w-1/4 mb-8 lg:mb-0">
-
             <x-form.form method="GET" action="{{ route('vacancies') }}" size="">
                 <x-html.h3>Умный фильтр</x-html.h3>
 
@@ -50,6 +49,10 @@
                     </div>
                 </div>
 
+                @foreach (request()->except(['cities', 'professions', 'tags', 'companies', 'salary_start', 'salary_end']) as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+
                 <!-- Кнопка применить фильтр -->
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Применить фильтр</x-button>
@@ -62,6 +65,7 @@
 
         <!-- Карточки вакансий -->
         <div class="w-full lg:w-3/4">
+            <x-sort title="Сортировка по зарплате" route="vacancies" subjectSort="salary_start" />
             @if ($vacancies->count() > 0)
             <x-vacancy.list class="mb-5">
                 @foreach ($vacancies as $vacancy)
