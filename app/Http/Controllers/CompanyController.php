@@ -51,8 +51,17 @@ class CompanyController extends Controller
 
         $validatedData = $this->companyFilterService->getData();
 
+        $sortColumn = 'created_at';
+        $sortDirection = 'desc';
+
+        if ($request->has('sort_vacancies_count')) {
+            $sortColumn = 'vacancies_count';
+            $sortDirection = $request->get('sort_vacancies_count');
+        }
+
         $companies = $query->with('cities')
             ->withCount('vacancies')
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(10)
             ->appends($request->query());
 

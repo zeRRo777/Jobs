@@ -24,6 +24,10 @@
                 'data' => $cities,
                 ])
 
+                @foreach (request()->except(['cities', 'companies']) as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+
                 <!-- Кнопка применить фильтр -->
                 <div class="mt-6">
                     <x-button class="w-full text-sm px-4 py-2" type="submit" type_component="button">Применить фильтр</x-button>
@@ -36,6 +40,7 @@
 
         <!-- Карточки вакансий -->
         <div class="w-full lg:w-3/4">
+            <x-sort title="Сортировка по количеству вакансий" route="companies" subjectSort="vacancies_count" />
             @if ($companies->count() > 0)
             <x-company.list class="mb-5">
                 @foreach ($companies as $company)
