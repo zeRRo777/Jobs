@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddUserCompanyRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\DeleteUserCompanyRequest;
 use App\Http\Requests\DeleteUserRequest;
@@ -178,8 +179,7 @@ class UserController extends Controller
         Gate::authorize('deleteUserCompany', $user);
 
         try {
-
-            $user->company_id = null;
+            $user->company()->dissociate();
 
             $user->save();
         } catch (\Exception $e) {
@@ -189,5 +189,26 @@ class UserController extends Controller
         }
 
         return redirect()->route('profile', $user->id)->with('success', 'Компания успешно удалена!');
+    }
+
+    public function addCompany(AddUserCompanyRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        $user = Auth::user();
+
+        Gate::authorize('addCompany', $user);
+
+        try {
+            $company = Company::where('secret_code', '=', $validatedData['secret_code'])->firstOrFail();
+
+            $user->company()->associate($company);
+            $user->save();
+        } catch (\Exception $e) {
+            Log::error('Ошибка при добавлении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
+            return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при добавлении компании! Попробуйте еще раз!']);
+        }
+
+        return redirect()->route('profile', $user->id)->with('success', 'Компания успешно добавлена!');
     }
 }

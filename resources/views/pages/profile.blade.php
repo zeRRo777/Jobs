@@ -241,7 +241,6 @@
     @can('deleteUserCompany', 'App\Models\User')
     <div x-data="{ deleteModalCompany: false }" x-init="deleteModalCompany = @json($errors->has('password_for_delete_company'))">
         <div class="flex flex-col md:flex-row gap-6">
-
             <div class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
                 <x-html.h3 class="mb-4">Перестать быть админом</x-html.h3>
                 <div class="mt-6">
@@ -279,5 +278,24 @@
         </div>
     </div>
     @endcan
+
+
+    @if (empty($user->company))
+    <div class="flex flex-col md:flex-row gap-6">
+        <div class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
+            <x-html.h3 class="mb-4">Стать админом</x-html.h3>
+            <form method="POST" action="{{ route('user.addCompany', $user->id) }}">
+                @csrf
+                <x-form.input-group label="Секретный код">
+                    <x-form.input type="text" name="secret_code" placeholder="Введите код компании" />
+                    <x-form.error field="secret_code" />
+                </x-form.input-group>
+                <x-button class="w-full text-sm px-4 py-2 mt-4" type="submit" type_component="button">
+                    Стать
+                </x-button>
+            </form>
+        </div>
+    </div>
+    @endif
 
 </x-layouts.app>

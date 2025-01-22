@@ -33,4 +33,9 @@ class UserPolicy
     {
         return !empty($user->company);
     }
+
+    public function addCompany(User $user)
+    {
+        return empty($user->company);
+    }
 }
