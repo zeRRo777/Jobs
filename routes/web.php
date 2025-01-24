@@ -5,7 +5,11 @@ use App\Http\Controllers\RegisteredController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\VerifyController;
 use Illuminate\Support\Facades\Route;
+
+// Auth::routes(['verify' => true]);
+
 
 
 Route::middleware('auth')->group(function () {
@@ -40,6 +44,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');
+
+    Route::controller(VerifyController::class)->group(function () {
+        Route::get('/email/verify/{id}/{hash}', 'verify')->name('verification.verify')->middleware('signed');
+    });
 });
 
 Route::middleware('guest')->group(function () {
@@ -55,6 +63,5 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 });
-
 
 Route::view('/about', 'pages.about')->name('about');

@@ -15,6 +15,7 @@
 
         <div class="flex justify-between flex-wrap">
             <div>
+                @livewire('confirm-registration')
                 <x-html.h3 class="mb-4">{{ $user->name }}</x-html.h3>
 
                 @if (!empty($user->company))

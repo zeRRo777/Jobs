@@ -6,7 +6,6 @@ use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class RegisteredService
 {
@@ -16,10 +15,8 @@ class RegisteredService
      * @param array $dataValidated
      * @throws \Exception
      */
-    public function registerUser(array $dataValidated): void
+    public function registerUser(array $dataValidated): User
     {
-        $dataValidated['password'] = Hash::make($dataValidated['password']);
-
         DB::beginTransaction();
 
         try {
@@ -28,6 +25,8 @@ class RegisteredService
             Auth::login($user, true);
 
             DB::commit();
+
+            return $user;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -38,13 +37,11 @@ class RegisteredService
      * Регистрация администратора
      *
      * @param array $dataValidated
-     * @return int $companyId
+     * @return User $user
      * @throws \Exception
      */
-    public function registerAdmin(array $dataValidated): int
+    public function registerAdmin(array $dataValidated): User
     {
-        $dataValidated['password'] = Hash::make($dataValidated['password']);
-
         DB::beginTransaction();
 
         try {
@@ -65,11 +62,11 @@ class RegisteredService
             }
 
             $user = User::create($dataValidated);
-            // event(new Registered($user)); // Если нужно, включите
+
             Auth::login($user, true);
 
             DB::commit();
-            return $company->id; // Возвращаем ID созданной компании
+            return $user;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;

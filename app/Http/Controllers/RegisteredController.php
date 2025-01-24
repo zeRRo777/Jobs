@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
 use App\Http\Requests\AdminRegisteredRequest;
 use App\Http\Requests\RegisteredRequest;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +22,10 @@ class RegisteredController extends Controller
     public function store(RegisteredRequest $request): RedirectResponse
     {
         try {
-            $this->registeredService->registerUser($request->validated());
+            $user = $this->registeredService->registerUser($request->validated());
+
+            event(new UserRegistered($user));
+
             return redirect()->route('vacancies');
         } catch (\Exception $e) {
             Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
@@ -32,8 +36,11 @@ class RegisteredController extends Controller
     public function admin_store(AdminRegisteredRequest $request): RedirectResponse
     {
         try {
-            $companyId = $this->registeredService->registerAdmin($request->validated());
-            return redirect()->route('company.show', $companyId);
+            $user = $this->registeredService->registerAdmin($request->validated());
+
+            event(new UserRegistered($user));
+
+            return redirect()->route('company.show', $user->company->id);
         } catch (\Exception $e) {
             Log::error('Ошибка при регистрации администратора: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать администратора. Попробуйте снова.']);
