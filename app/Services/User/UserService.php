@@ -7,6 +7,7 @@ use App\Mail\RegistrationMail;
 use App\Models\City;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,6 +16,8 @@ class UserService
     public function updateUser(User $user, array $data)
     {
         $emailChanged = isset($data['email']) && $data['email'] !== $user->email;
+
+        Log::info('Начало обновления данных пользователя с ID: ' . $user->id);
 
         if (!empty($data['new_cities'])) {
             $newCityIds = $this->createCities($data['new_cities']);
@@ -25,17 +28,22 @@ class UserService
 
         $user->cities()->sync($data['cities']);
 
+        Log::info('Города пользователя с ID: ' . $user->id . ' успешно обновлены.');
+
 
         if (isset($data['delete_photo']) && $data['delete_photo'] == 'on') {
             $this->deletePhoto($user->photo);
             $user->photo = null;
+            Log::info('Фото пользователя с ID: ' . $user->id . ' удалено.');
         }
 
         if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
             $path = $this->uploadPhoto($user, $data['photo']);
             if ($path) {
                 $data['photo'] = $path;
+                Log::info('Новое фото пользователя с ID: ' . $user->id . ' успешно загружено.');
             } else {
+                Log::error('Не удалось загрузить фото для пользователя с ID: ' . $user->id);
                 throw new \Exception('Не удалось сохранить фото. Попробуйте снова.');
             }
         }
@@ -45,12 +53,15 @@ class UserService
         if ($emailChanged) {
             $data['show'] = false;
             $data['email_verified_at'] = null;
+            Log::info('Email пользователя с ID: ' . $user->id . ' изменен. Требуется повторная верификация.');
         }
 
         $user->update($data);
+        Log::info('Данные пользователя с ID: ' . $user->id . ' успешно обновлены.');
 
         if ($emailChanged) {
             Mail::to($user)->send(new ChangeEmailMail($user));
+            Log::info('Письмо для подтверждения email отправлено пользователю с ID: ' . $user->id);
             session()->flash('warning', 'Email изменен. Письмо для подтверждения отправлено на ваш новый адрес.');
         }
         return $user;
