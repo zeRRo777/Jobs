@@ -2,15 +2,20 @@
 
 namespace App\Services\User;
 
+use App\Mail\ChangeEmailMail;
+use App\Mail\RegistrationMail;
 use App\Models\City;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class UserService
 {
     public function updateUser(User $user, array $data)
     {
+        $emailChanged = isset($data['email']) && $data['email'] !== $user->email;
+
         if (!empty($data['new_cities'])) {
             $newCityIds = $this->createCities($data['new_cities']);
             $data['cities'] = array_merge($data['cities'] ?? [], $newCityIds);
@@ -21,8 +26,7 @@ class UserService
         $user->cities()->sync($data['cities']);
 
 
-        if(isset($data['delete_photo']) && $data['delete_photo'] == 'on')
-        {
+        if (isset($data['delete_photo']) && $data['delete_photo'] == 'on') {
             $this->deletePhoto($user->photo);
             $user->photo = null;
         }
@@ -34,12 +38,21 @@ class UserService
             } else {
                 throw new \Exception('Не удалось сохранить фото. Попробуйте снова.');
             }
-        } 
+        }
 
         unset($data['new_cities'], $data['cities'], $data['user_id'], $data['delete_photo']);
 
+        if ($emailChanged) {
+            $data['show'] = false;
+            $data['email_verified_at'] = null;
+        }
+
         $user->update($data);
 
+        if ($emailChanged) {
+            Mail::to($user)->send(new ChangeEmailMail($user));
+            session()->flash('warning', 'Email изменен. Письмо для подтверждения отправлено на ваш новый адрес.');
+        }
         return $user;
     }
 
@@ -68,8 +81,7 @@ class UserService
 
     protected function deletePhoto(string $path): void
     {
-        if(Storage::disk('public')->exists($path))
-        {
+        if (Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path);
         }
     }

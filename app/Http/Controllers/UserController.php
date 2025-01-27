@@ -176,8 +176,6 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        Gate::authorize('deleteUserCompany', $user);
-
         try {
             $user->company()->dissociate();
 
@@ -197,14 +195,26 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        Gate::authorize('addCompany', $user);
+        DB::beginTransaction();
 
         try {
             $company = Company::where('secret_code', '=', $validatedData['secret_code'])->firstOrFail();
 
+            $vacancyIds = $company->vacancies()->pluck('id');
+
+            $user->offeredVacancies()->detach($vacancyIds);
+
+            $user->likedVacancies()->detach($vacancyIds);
+
             $user->company()->associate($company);
             $user->save();
+
+            $company->secret_code = null;
+            $company->save();
+
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Ошибка при добавлении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
             return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при добавлении компании! Попробуйте еще раз!']);
         }

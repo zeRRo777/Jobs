@@ -6,6 +6,10 @@
     <x-success>{{ session('success') }}</x-success>
     @endif
 
+    @if (session('warning'))
+    <x-warning>{{ session('warning') }}</x-warning>
+    @endif
+
     <div x-data="{ editing: @js($errors->hasAny(['name', 'email', 'profession', 'resume', 'new_cities', 'photo', 'delete_photo'])) }">
         <div class="flex justify-end mb-4">
             <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
@@ -15,7 +19,9 @@
 
         <div class="flex justify-between flex-wrap">
             <div>
+                @if (!auth()->user()->hasVerifiedEmail())
                 @livewire('confirm-registration')
+                @endif
                 <x-html.h3 class="mb-4">{{ $user->name }}</x-html.h3>
 
                 @if (!empty($user->company))
@@ -64,7 +70,12 @@
         <x-html.p class="mb-4">{{ $user->resume }}</x-html.p>
         @endif
 
+        @if ($user->hasVerifiedEmail())
         @livewire('show-your-profile')
+        @else
+        <x-html.p class="mb-4">Сейчас работодатели не видят ваше резюме, ван нужно подтвердить регистрацию!</x-html.p>
+        @endif
+
 
         <div x-show="editing">
             <x-html.h2>Редактирование</x-html.h2>
@@ -239,7 +250,7 @@
         </div>
     </div>
 
-    @can('deleteUserCompany', 'App\Models\User')
+    @can('admin', 'App\Models\User')
     <div x-data="{ deleteModalCompany: false }" x-init="deleteModalCompany = @json($errors->has('password_for_delete_company'))">
         <div class="flex flex-col md:flex-row gap-6">
             <div class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
@@ -280,8 +291,7 @@
     </div>
     @endcan
 
-
-    @if (empty($user->company))
+    @if ($user->hasVerifiedEmail() && empty($user->company))
     <div class="flex flex-col md:flex-row gap-6">
         <div class=" bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-10">
             <x-html.h3 class="mb-4">Стать админом</x-html.h3>

@@ -14,7 +14,7 @@ class VacancyPolicy
      */
     public function update(User $user, Vacancy $vacancy): bool
     {
-        return !empty($user->company) && $user->company->id === $vacancy->company_id;
+        return !empty($user->company) && $user->company->id === $vacancy->company_id && $user->hasVerifiedEmail();
     }
 
     /**
@@ -22,12 +22,12 @@ class VacancyPolicy
      */
     public function delete(User $user, Vacancy $vacancy): bool
     {
-        return !empty($user->company) && $user->company->id === $vacancy->company_id;
+        return !empty($user->company) && $user->company->id === $vacancy->company_id && $user->hasVerifiedEmail();
     }
 
     public function like(User $user, Vacancy $vacancy)
     {
-        return !(!empty($user->company) && $user->company->id === $vacancy->company_id);
+        return !(!empty($user->company) && $user->company->id === $vacancy->company_id) && $user->hasVerifiedEmail();
     }
 
     public function viewUsersLiked(User $user, Vacancy $vacancy)
@@ -37,6 +37,6 @@ class VacancyPolicy
 
     public function offer(User $user, Vacancy $vacancy)
     {
-        return !empty($user->company) && $user->company->id === $vacancy->company_id;
+        return !empty($user->company) && $user->company->id === $vacancy->company_id && $user->hasVerifiedEmail();
     }
 }

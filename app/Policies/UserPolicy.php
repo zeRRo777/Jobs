@@ -7,19 +7,14 @@ use App\Models\User;
 
 class UserPolicy
 {
-    public function admin(User $currentUser, User $user): bool
+    public function admin(User $user): bool
     {
-        return !empty($currentUser->company) && ($currentUser->id !== $user->id);
+        return !empty($user->company);
     }
 
     public function base(User $currenUser, User $user): bool
     {
         return $currenUser->id === $user->id;
-    }
-
-    public function viewAllUsers(User $currentUser): bool
-    {
-        return !empty($currentUser->company);
     }
 
     public function viewUserDetail(User $currentUser, User $user): bool
@@ -29,13 +24,13 @@ class UserPolicy
             && ($user->show || $user->likedVacancies->intersect($currentUser->company->vacancies)->isNotEmpty());
     }
 
-    public function deleteUserCompany(User $user)
+    public function onlyBase(User $currentUser, User $user)
     {
-        return !empty($user->company);
+        return $currentUser->id === $user->id && empty($user->company);
     }
 
-    public function addCompany(User $user)
+    public function onlyAdmin(User $currentUser, User $user)
     {
-        return empty($user->company);
+        return !empty($currentUser->company) && $currentUser->id !== $user->id;
     }
 }

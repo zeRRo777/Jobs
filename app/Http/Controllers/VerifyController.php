@@ -11,6 +11,12 @@ class VerifyController extends Controller
     {
         $request->fulfill();
 
-        return redirect()->route('profile', Auth::id())->with(['success' => 'Вы успешно подтвердили регистрацию!']);
+        $user = Auth::user();
+
+        $user->show = true;
+
+        $user->save();
+
+        return redirect()->route('profile', Auth::id())->with(['success' => 'Вы успешно подтвердили почту!']);
     }
 }

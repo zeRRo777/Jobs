@@ -53,6 +53,7 @@
         </x-html.p>
         @endif
 
+        @can('update', $company)
         <div x-show="editing" class="mb-5">
             <x-html.h2>Редактирование</x-html.h2>
             <x-form size="" method="POST" action="{{ route('company.update', $company->id) }}" enctype="multipart/form-data">
@@ -110,6 +111,7 @@
 
             </x-form>
         </div>
+        @endcan
 
         <x-html.h2>Вакансии</x-html.h2>
 
@@ -121,6 +123,7 @@
         </div>
         @endcan
 
+        @can('createVacancy', $company)
         <div x-show="add_vacancy" class="mb-5">
             <x-html.h2>Создание вакансии</x-html.h2>
 
@@ -179,6 +182,7 @@
 
             </x-form>
         </div>
+        @endcan
 
         @if ($vacancies->count() > 0)
         <x-vacancy.list class="mb-5">

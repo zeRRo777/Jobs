@@ -13,16 +13,16 @@ class CompanyPolicy
      */
     public function update(User $user, Company $company): bool
     {
-        return !empty($user->company) && $user->company->id === $company->id;
+        return !empty($user->company) && $user->company->id === $company->id && $user->hasVerifiedEmail();
     }
 
     public function generateCode(User $user, Company $company): bool
     {
-        return !empty($user->company) && $user->company->id === $company->id;
+        return !empty($user->company) && $user->company->id === $company->id && $user->hasVerifiedEmail();
     }
 
     public function createVacancy(User $user, Company $company): bool
     {
-        return !empty($user->company) && $user->company->id === $company->id;
+        return !empty($user->company) && $user->company->id === $company->id && $user->hasVerifiedEmail();
     }
 }

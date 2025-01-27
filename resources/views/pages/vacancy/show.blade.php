@@ -92,6 +92,7 @@
         <livewire:vacancy-like :vacancy="$vacancy" class="text-sm px-4 py-2" />
         @endcan
 
+        @can('update', $vacancy)
         <div x-show="editing" class="mb-4">
             <x-html.h2>Редактирование</x-html.h2>
             <x-form size="" method="POST" action="{{ route('vacancy.update', $vacancy->id) }}">
@@ -150,6 +151,7 @@
 
             </x-form>
         </div>
+        @endcan
 
         @can('viewUsersLiked', $vacancy)
         <x-html.h2>Люди, откликнувшиеся на вакансию</x-html.h2>
