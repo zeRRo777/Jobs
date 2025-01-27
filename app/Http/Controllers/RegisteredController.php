@@ -7,7 +7,6 @@ use App\Http\Requests\AdminRegisteredRequest;
 use App\Http\Requests\RegisteredRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
 use App\Services\User\RegisteredService;
 
 class RegisteredController extends Controller
