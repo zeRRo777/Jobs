@@ -21,13 +21,11 @@ class RegisteredController extends Controller
     public function store(RegisteredRequest $request): RedirectResponse
     {
         try {
-            $user = $this->registeredService->registerUser($request->validated());
-
-            event(new UserRegistered($user));
+            $this->registeredService->registerUser($request->validated());
 
             return redirect()->route('vacancies');
         } catch (\Exception $e) {
-            Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
+
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать пользователя. Попробуйте снова.']);
         }
     }
@@ -37,11 +35,9 @@ class RegisteredController extends Controller
         try {
             $user = $this->registeredService->registerAdmin($request->validated());
 
-            event(new UserRegistered($user));
-
             return redirect()->route('company.show', $user->company->id);
         } catch (\Exception $e) {
-            Log::error('Ошибка при регистрации администратора: ' . $e->getMessage(), ['exception' => $e]);
+
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать администратора. Попробуйте снова.']);
         }
     }
