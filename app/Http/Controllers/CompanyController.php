@@ -32,41 +32,17 @@ class CompanyController extends Controller
 
     public function popular(): View
     {
-        $companies = Company::with('cities')->withCount('vacancies')
-            ->orderBy('vacancies_count', 'desc')
-            ->take(10)
-            ->get();
+        $companies = $this->companyService->getPopularCompanies();
+
         return view('pages.index', ['companies' => $companies]);
     }
 
     public function index(SmartFilterCompaniesRequest $request): View
     {
-
         $validatedData = $request->validated();
 
-        $this->companyFilterService->setData($validatedData);
-
-        $query = $this->companyFilterService->applyFilters();
-
-        $validatedData = $this->companyFilterService->getData();
-
-        $sortColumn = 'created_at';
-        $sortDirection = 'desc';
-
-        if ($request->has('sort_vacancies_count')) {
-            $sortColumn = 'vacancies_count';
-            $sortDirection = $request->get('sort_vacancies_count');
-        }
-
-        $companies = $query->with('cities')
-            ->withCount('vacancies')
-            ->orderBy($sortColumn, $sortDirection)
-            ->paginate(10)
-            ->appends($request->query());
-
-
+        $companies = $this->companyFilterService->getFilteredCompanies($validatedData, $request->query());
         $cities = $this->companyFilterService->getFilterCityData();
-
         $companiesFilter = $this->companyFilterService->getFilterCompanyData();
 
         return view('pages.company.index', compact('companies', 'cities', 'companiesFilter'));
@@ -74,98 +50,33 @@ class CompanyController extends Controller
 
     public function show(Company $company): View
     {
+        $data = $this->companyService->getCompanyDetails($company);
 
-        $vacancies = $company->vacancies()->with('tags', 'company', 'city')->orderBy('created_at', 'desc')->paginate(3);
-
-        $cities = City::all()->map(function ($city) use ($company) {
-            return [
-                'id' => $city->id,
-                'name' => $city->name,
-                'active' => $company->cities->contains($city)
-            ];
-        });
-
-        $tags_vacancy = Tag::all()->map(function ($tag) {
-            return [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'active' => in_array($tag->id, session()->get('tags_vacancy', []))
-            ];
-        });
-
-        $cities_vacancy = City::all()->map(function ($city) {
-            return [
-                'id' => $city->id,
-                'name' => $city->name,
-                'active' => $city->id == session()->get('city_id_vacancy')
-            ];
-        });
-
-        return view('pages.company.show', compact('company', 'vacancies', 'cities', 'tags_vacancy', 'cities_vacancy'));
+        return view('pages.company.show', $data);
     }
 
     public function update(Company $company, UpdateCompanyRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
-        try {
-            $this->companyService->updateCompany($company, $validatedData);
-        } catch (\Throwable $e) {
-            Log::error('Ошибка при обновлении компании: ' . $e->getMessage(), ['exception' => $e]);
-
-            return back()->withErrors(['error_company' => 'Ошибка при обновлении данных компании. Попробуйте снова.']);
-        }
+        $this->companyService->updateCompany($company, $validatedData);
 
         return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
     }
 
     public function generateSecretCode(User $user, Company $company): RedirectResponse
     {
-
         Gate::authorize('generateCode', $company);
 
-        $user = Auth::user();
+        $this->companyService->generateSecretCode($company);
 
-        try {
-            DB::beginTransaction();
-
-            $secretCode = $this->companyService->generateSecretCode();
-            $user->company->update(['secret_code' => $secretCode]);
-
-            DB::commit();
-
-            return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Ошибка генерации секретного кода: ' . $e->getMessage(), ['exception' => $e]);
-
-            return redirect()->route('profile', $user->id)
-                ->withErrors(['secret_code' => 'Не удалось сгенерировать секретный код. Попробуйте снова.']);
-        }
+        return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
     }
 
     public function deleteSecretCode(User $user, Company $company)
     {
         Gate::authorize('generateCode', $company);
-
-        $user = Auth::user();
-
-        try {
-            DB::beginTransaction();
-
-            $user->company->update(['secret_code' => null]);
-
-            DB::commit();
-
-            return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно удален!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Ошибка удаления секретного кода: ' . $e->getMessage(), ['exception' => $e]);
-
-            return redirect()->route('profile', $user->id)
-                ->withErrors(['secret_code' => 'Не удалось удалить секретный код. Попробуйте снова.']);
-        }
+        $this->companyService->deleteSecretCode($company);
+        return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно удален!');
     }
 }

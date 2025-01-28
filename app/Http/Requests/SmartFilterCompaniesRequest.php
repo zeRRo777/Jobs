@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SmartFilterCompaniesRequest extends FormRequest
 {
@@ -22,18 +24,18 @@ class SmartFilterCompaniesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cities' => ['nullable', 'array'],
-            'cities.*' => ['integer', 'exists:cities,id'],
-            'companies' => ['nullable', 'array'],
-            'companies.*' => ['integer', 'exists:companies,id'],
+            'cities' => ['nullable', 'array', new Exists('cities')],
+            'cities.*' => ['integer'],
+            'companies' => ['nullable', 'array', new Exists('companies')],
+            'companies.*' => ['integer'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'cities.*.exists' => 'Таких городов не существует!',
-            'companies.*.exists' => 'Таких компаний не существует!',
+            'cities.*.integer' => 'ID города должен быть целым числом.',
+            'companies.*.integer' => 'ID компании должен быть целым числом.',
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use App\Rules\UniqueCities;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -40,8 +41,8 @@ class UpdateCompanyRequest extends FormRequest
             'company_id_company' => ['required', 'exists:companies,id'],
             'description_company' => ['nullable', 'string', 'max:1000'],
             'new_cities_company' => ['nullable', 'string', new UniqueCities],
-            'cities_company' => ['nullable', 'array'],
-            'cities_company.*' => ['string', 'exists:cities,id'],
+            'cities_company' => ['nullable', 'array', new Exists('cities')],
+            'cities_company.*' => ['string'],
             'photo_company' => ['nullable', 'image', 'max:5120', 'exclude_with:delete_photo'],
             'delete_photo_company' => ['nullable', 'string'],
         ];

@@ -5,7 +5,9 @@ namespace App\Services\Company;
 use App\Models\City;
 use App\Models\Company;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class CompanyFilterService
 {
@@ -16,6 +18,22 @@ class CompanyFilterService
     {
         $this->data = $data;
         $this->query = Company::query();
+    }
+
+    public function getFilteredCompanies(array $data, array $queryParams): LengthAwarePaginator
+    {
+        $this->setData($data);
+        $this->applyFilters();
+
+        $sortColumn = isset($queryParams['vacancies_count']) ? 'vacancies_count' : 'created_at';
+        $sortDirection = $queryParams['vacancies_count'] ?? 'desc';
+
+        return $this->query
+            ->with('cities')
+            ->withCount('vacancies')
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(10)
+            ->appends($queryParams);
     }
 
     public function applyFilters(): Builder
@@ -49,24 +67,29 @@ class CompanyFilterService
 
     public function getFilterCityData(): Collection
     {
-        return City::whereHas('companies')->pluck('name', 'id')->unique()->map(function ($name, $id) {
-            return [
-                'id' => $id,
-                'name' => $name,
-                'active' => in_array($id, $this->data['cities'] ?? []),
-            ];
-        });
+        return City::whereHas('companies')
+            ->pluck('name', 'id')
+            ->unique()
+            ->map(function ($name, $id) {
+                return [
+                    'id' => $id,
+                    'name' => $name,
+                    'active' => in_array($id, $this->data['cities'] ?? []),
+                ];
+            });
     }
 
     public function getFilterCompanyData(): Collection
     {
-        return Company::pluck('name', 'id')->map(function ($name, $id) {
-            return [
-                'id' => $id,
-                'name' => $name,
-                'active' => in_array($id, $this->data['companies'] ?? []),
-            ];
-        });
+
+        return Company::pluck('name', 'id')
+            ->map(function ($name, $id) {
+                return [
+                    'id' => $id,
+                    'name' => $name,
+                    'active' => in_array($id, $this->data['companies'] ?? []),
+                ];
+            });
     }
 
     public function setData(array $data): void

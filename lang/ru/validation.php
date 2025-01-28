@@ -159,4 +159,5 @@ return [
     'url' => 'Поле :attribute должно быть допустимым URL.',
     'ulid' => 'Поле :attribute должно быть допустимым ULID.',
     'uuid' => 'Поле :attribute должно быть допустимым UUID.',
+    'my_exists' => 'Выбранное значение для :attribute недействительно.',
 ];
