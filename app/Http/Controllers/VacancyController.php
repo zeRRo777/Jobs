@@ -10,6 +10,7 @@ use App\Models\City;
 use App\Models\Tag;
 use App\Models\Company;
 use App\Models\User;
+use App\Services\Vacancy\VacancyDataService;
 use App\Services\Vacancy\VacancyFilterService;
 use App\Services\Vacancy\VacancyService;
 use Illuminate\Http\RedirectResponse;
@@ -20,95 +21,60 @@ use Illuminate\View\View;
 
 class VacancyController extends Controller
 {
-
     protected $vacancyService;
-
     protected $vacancyFilterService;
+    protected $vacancyDataService;
 
-    public function __construct(VacancyService $vacancyService, VacancyFilterService $vacancyFilterService)
-    {
+    public function __construct(
+        VacancyService $vacancyService,
+        VacancyFilterService $vacancyFilterService,
+        VacancyDataService $vacancyDataService
+    ) {
         $this->vacancyService = $vacancyService;
         $this->vacancyFilterService = $vacancyFilterService;
+        $this->vacancyDataService = $vacancyDataService;
     }
 
     public function index(SmartFilterVacanciesRequest $request): View
     {
         $validatedData = $request->validated();
 
-        $this->vacancyFilterService->setData($validatedData);
-
-        $query = $this->vacancyFilterService->applyFilters();
-
-        $validatedData = $this->vacancyFilterService->getData();
-
-        $sortColumn = 'created_at';
-        $sortDirection = 'desc';
-
-        if ($request->has('sort_salary_start')) {
-            $sortColumn = 'salary_start';
-            $sortDirection = $request->get('sort_salary_start');
-        }
-
-        $vacancies = $query->with(['tags', 'city', 'company'])
-            ->orderBy($sortColumn, $sortDirection)
+        $vacancies = $this->vacancyFilterService
+            ->setData($validatedData)
+            ->getFilteredVacancies()
             ->paginate(10)
             ->appends($request->query());
 
-        $salaryStats = Vacancy::selectRaw('MIN(salary_start) as min_salary, MAX(salary_start) as max_salary_start, MAX(salary_end) as max_salary_end')->first();
+        $filtersData = $this->vacancyDataService->getAllFilterData($validatedData);
+        $salaryRange = $this->vacancyDataService->getSalaryRange($validatedData);
 
-        $minSalary = $validatedData['salary_start'] ?? $salaryStats->min_salary;
-        $maxSalary = $validatedData['salary_end'] ?? ($salaryStats->max_salary_start > $salaryStats->max_salary_end) ? $salaryStats->max_salary_start : $salaryStats->max_salary_end;
-
-        $cities = $this->vacancyFilterService->getFilterData(City::class, 'cities');
-        $tags = $this->vacancyFilterService->getFilterData(Tag::class, 'tags');
-        $companies = $this->vacancyFilterService->getFilterData(Company::class, 'companies');
-        $professions = $this->vacancyFilterService->getProfessionFilterData();
-
-        return view('pages.vacancy.index', compact(
-            'vacancies',
-            'cities',
-            'tags',
-            'companies',
-            'professions',
-            'minSalary',
-            'maxSalary'
+        return view('pages.vacancy.index', array_merge(
+            compact('vacancies'),
+            $filtersData,
+            $salaryRange
         ));
     }
 
     public function show(Vacancy $vacancy): View
     {
-        $tags = Tag::all()->map(function ($tag) use ($vacancy) {
-            return [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'active' => $vacancy->tags->contains($tag)
-            ];
-        });
+        $vacancy->load('company', 'city');
 
-        $cities = City::all()->map(function ($city) use ($vacancy) {
-            return [
-                'id' => $city->id,
-                'name' => $city->name,
-                'active' => $city->id == $vacancy->city?->id
-            ];
-        });
-
-        $users = $vacancy->userLiked()->get();
-
-        return view('pages.vacancy.show', compact('vacancy', 'tags', 'cities', 'users'));
+        $relationsData = $this->vacancyDataService->getVacancyRelationsData($vacancy);
+        return view('pages.vacancy.show', array_merge(
+            compact('vacancy'),
+            $relationsData
+        ));
     }
 
     public function update(Vacancy $vacancy, UpdateVacancyRequest $request): RedirectResponse
     {
         $dataValidated = $request->validated();
-
-        Log::info('Начало обновление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id());
         try {
+
             $this->vacancyService->updateVacancy($vacancy, $dataValidated);
-            Log::info('Обновление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id() . ' завершено успешно.');
+
             return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Данные вакансии успешно обновлены!');
         } catch (\Throwable $e) {
-            Log::error('Ошибка при обновлении вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['error' => 'Ошибка при обновлении данных вакансии. Попробуйте снова.']);
         }

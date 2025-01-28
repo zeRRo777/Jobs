@@ -7,7 +7,7 @@
     <div class="flex flex-col md:items-center space-y-2 md:space-x-2 md:flex-row">
         <x-html.h3>{{ $title }}</x-html.h3>
         <form method="GET" action="{{ route($route) }}">
-            @foreach (request()->except('sort_' . $subjectSort) as $key => $value )
+            @foreach (request()->except($subjectSort) as $key => $value )
             @if (is_array($value))
             @foreach ($value as $v)
             <input type="hidden" name="{{ $key }}[]" value="{{ $v }}">

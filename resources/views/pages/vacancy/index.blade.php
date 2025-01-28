@@ -65,7 +65,7 @@
 
         <!-- Карточки вакансий -->
         <div class="w-full lg:w-3/4">
-            <x-sort title="Сортировка по зарплате" route="vacancies" subjectSort="salary_start" />
+            <x-sort title="Сортировка по зарплате" route="vacancies" subjectSort="sort_salary_start" />
             @if ($vacancies->count() > 0)
             <x-vacancy.list class="mb-5">
                 @foreach ($vacancies as $vacancy)

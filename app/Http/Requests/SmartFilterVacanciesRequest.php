@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SmartFilterVacanciesRequest extends FormRequest
 {
@@ -22,16 +24,17 @@ class SmartFilterVacanciesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cities' => ['nullable', 'array'],
-            'cities.*' => ['integer', 'exists:cities,id'],
-            'professions' => ['nullable', 'array'],
-            'professions.*' => ['string', 'exists:vacancies,title'],
-            'tags' => ['nullable', 'array'],
-            'tags.*' => ['string', 'exists:tags,id'],
-            'companies' => ['nullable', 'array'],
-            'companies.*' => ['integer', 'exists:companies,id'],
+            'cities' => ['nullable', 'array', new Exists('cities')],
+            'cities.*' => ['integer'],
+            'professions' => ['nullable', 'array', new Exists('vacancies', column: 'title')],
+            'professions.*' => ['string'],
+            'tags' => ['nullable', 'array', new Exists('tags')],
+            'tags.*' => ['string'],
+            'companies' => ['nullable', 'array', new Exists('companies')],
+            'companies.*' => ['integer'],
             'salary_start' => ['nullable', 'integer', 'min:0'],
             'salary_end' => ['nullable', 'integer', 'min:0', 'gte:salary_start'],
+            'sort_salary_start' => ['nullable', Rule::in(['asc', 'desc'])],
         ];
     }
 
@@ -55,6 +58,7 @@ class SmartFilterVacanciesRequest extends FormRequest
             'companies' => 'Компании',
             'salary_start' => 'Зарплата от',
             'salary_end' => 'Зарплата до',
+            'sort_salary_start' => 'Сортировать по зарплате'
         ];
     }
 }

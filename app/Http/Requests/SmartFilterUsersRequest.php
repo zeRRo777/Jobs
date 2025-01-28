@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SmartFilterUsersRequest extends FormRequest
@@ -22,10 +23,10 @@ class SmartFilterUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cities' => ['nullable', 'array'],
-            'cities.*' => ['integer', 'exists:cities,id'],
-            'professions' => ['nullable', 'array'],
-            'professions.*' => ['string', 'exists:users,profession'],
+            'cities' => ['nullable', 'array', new Exists('cities')],
+            'cities.*' => ['integer'],
+            'professions' => ['nullable', 'array', new Exists('users', column: 'profession')],
+            'professions.*' => ['string'],
         ];
     }
 

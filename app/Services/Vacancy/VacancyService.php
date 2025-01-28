@@ -5,13 +5,17 @@ namespace App\Services\Vacancy;
 use App\Models\Vacancy;
 use App\Models\City;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VacancyService
 {
-    public function updateVacancy(Vacancy $vacancy, array $data)
+    public function updateVacancy(Vacancy $vacancy, array $data): Vacancy
     {
-        try{
+        Log::info('Начало обновление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id());
+
+        try {
             DB::beginTransaction();
             if (!empty($data['new_city'])) {
                 $city = $this->createCity($data['new_city']);
@@ -33,9 +37,14 @@ class VacancyService
 
             DB::commit();
 
+            Log::info('Обновление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id() . ' завершено успешно.');
+
             return $vacancy;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
+
+            Log::error('Ошибка при обновлении вакансии: ' . $e->getMessage(), ['exception' => $e]);
+
             throw $e;
         }
     }
@@ -62,19 +71,19 @@ class VacancyService
         return $tagIds;
     }
 
-    public function delete(Vacancy $vacancy)
+    public function delete(Vacancy $vacancy): void
     {
-        try{
+        try {
             DB::beginTransaction();
             $vacancy->delete();
             DB::commit();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
     }
 
-    public function createVacancy(array $data)
+    public function createVacancy(array $data): Vacancy
     {
         try {
             DB::beginTransaction();
@@ -106,4 +115,3 @@ class VacancyService
         }
     }
 }
-

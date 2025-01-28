@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserOffersRequest extends FormRequest
@@ -29,8 +30,8 @@ class UserOffersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vacancies' => ['required', 'array'],
-            'vacancies.*' => ['string', 'exists:vacancies,id'],
+            'vacancies' => ['required', 'array', new Exists('vacancies')],
+            'vacancies.*' => ['string'],
             'user_id' => ['required', 'exists:users,id'],
         ];
     }

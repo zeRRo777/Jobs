@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use App\Rules\UniqueTags;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -47,8 +48,8 @@ class UpdateVacancyRequest extends FormRequest
             'vacancy_id' => ['required', 'exists:vacancies,id'],
             'city_id' => ['nullable', 'exists:cities,id'],
             'new_tags' => ['nullable', 'string', new UniqueTags],
-            'tags' => ['nullable', 'array'],
-            'tags.*' => ['string', 'exists:tags,id'],
+            'tags' => ['nullable', 'array', new Exists('tags')],
+            'tags.*' => ['string'],
             'salary_start' => ['nullable', 'integer', 'min:1'],
             'salary_end' => ['nullable', 'integer', 'min:1', 'gte:salary_start'],
         ];

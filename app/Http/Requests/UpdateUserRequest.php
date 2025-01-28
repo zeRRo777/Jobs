@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Exists;
 use App\Rules\UniqueCities;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -32,21 +33,24 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 
-            Rule::unique('users')->ignore($this->user_id)
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user_id)
             ],
             'profession' => ['nullable', 'string', 'max:255'],
             'user_id' => ['required', 'exists:users,id'],
             'new_cities' => ['nullable', 'string', new UniqueCities],
-            'cities' => ['nullable', 'array'],
-            'cities.*' => ['string', 'exists:cities,id'],
+            'cities' => ['nullable', 'array', new Exists('cities')],
+            'cities.*' => ['string'],
             'photo' => ['nullable', 'image', 'max:5120', 'exclude_with:delete_photo'],
             'delete_photo' => ['nullable', 'string'],
             'resume' => ['nullable', 'string', 'max:2000']
         ];
     }
 
-    public function attributes() : array
+    public function attributes(): array
     {
         return [
             'name' => 'ФИО',

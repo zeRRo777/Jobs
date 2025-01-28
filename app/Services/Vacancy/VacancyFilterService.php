@@ -5,6 +5,7 @@ namespace App\Services\Vacancy;
 use App\Models\Vacancy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class VacancyFilterService
 {
@@ -14,17 +15,14 @@ class VacancyFilterService
     public function __construct(array $data = [])
     {
         $this->data = $data;
-        $this->query = Vacancy::query();
-    }
-
-    public function applyFilters(): Builder
-    {
-        $this->applyCityFilter();
-        $this->applyTagFilter();
-        $this->applyProfessionFilter();
-        $this->applyCompanyFilter();
-        $this->applySalaryFilter();
-        return $this->query;
+        $this->query = Vacancy::query()->with([
+            'tags',
+            'city',
+            'company',
+            'userLiked' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }
+        ]);
     }
 
     protected function applyCityFilter(): void
@@ -79,35 +77,49 @@ class VacancyFilterService
         return $this->data;
     }
 
-    public function getFilterData($model, $key): Collection
+    public function getFilteredVacancies(): Builder
     {
-        return $model::whereHas('vacancies')
-            ->pluck('name', 'id')->unique()
-            ->map(function ($name, $id) use ($key) {
-                return [
-                    'id' => $id,
-                    'name' => $name,
-                    'active' => in_array($id, $this->data[$key] ?? []),
-                ];
-            });
+        $this->applyAllFilters()
+            ->applySorting();
+
+        return $this->query;
     }
 
-    public function getProfessionFilterData(): Collection
-    {
-        return Vacancy::select('title')
-            ->distinct()
-            ->pluck('title')
-            ->map(function ($name) {
-                return [
-                    'id' => $name,
-                    'name' => $name,
-                    'active' => in_array($name, $this->data['professions'] ?? []),
-                ];
-            });
-    }
-
-    public function setData(array $data): void
+    public function setData(array $data): self
     {
         $this->data = $data;
+
+        return $this;
+    }
+
+    protected function applyAllFilters(): self
+    {
+        $filters = [
+            'cities' => 'applyCityFilter',
+            'tags' => 'applyTagFilter',
+            'professions' => 'applyProfessionFilter',
+            'companies' => 'applyCompanyFilter',
+            'salary_start' => 'applySalaryFilter',
+            'salary_end' => 'applySalaryFilter',
+        ];
+
+
+        foreach ($filters as $key => $method) {
+            if (!empty($this->data[$key])) {
+                $this->$method();
+            }
+        }
+
+        return $this;
+    }
+
+    protected function applySorting(): self
+    {
+        $sortColumn = isset($this->data['sort_salary_start']) ? 'salary_start' : 'created_at';
+        $sortDirection = $this->data['sort_salary_start'] ?? 'desc';
+
+        $this->query->orderBy($sortColumn, $sortDirection);
+
+        return $this;
     }
 }
