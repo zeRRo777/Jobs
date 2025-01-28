@@ -69,12 +69,24 @@ class VacancyController extends Controller
     public function update(Vacancy $vacancy, UpdateVacancyRequest $request): RedirectResponse
     {
         $dataValidated = $request->validated();
+
+        Log::info('Начало обновление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id());
+
+        DB::beginTransaction();
         try {
 
             $this->vacancyService->updateVacancy($vacancy, $dataValidated);
 
+            DB::commit();
+
+            Log::info('Обновление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id() . ' завершено успешно.');
+
             return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Данные вакансии успешно обновлены!');
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            Log::error('Ошибка при обновлении вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['error' => 'Ошибка при обновлении данных вакансии. Попробуйте снова.']);
         }
@@ -82,12 +94,20 @@ class VacancyController extends Controller
 
     public function delete(Vacancy $vacancy): RedirectResponse
     {
+        DB::beginTransaction();
+
         Log::info('Начало удаление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id());
+
         try {
             $this->vacancyService->delete($vacancy);
+
             Log::info('Удаление вакансии с ID ' . $vacancy->id . ' у пользователя с ID: ' . Auth::id() . ' завершено успешно.');
+
+            DB::commit();
             return redirect()->route('company.show', Auth::user()->company->id)->with('success', 'Вакансия успешно удалена!');
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
+            DB::rollBack();
+
             Log::error('Ошибка при удалении вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['delete_vacancy' => 'Ошибка при удалении вакансии. Попробуйте снова.']);
@@ -98,6 +118,8 @@ class VacancyController extends Controller
     {
         $dataValidated = $request->validated();
 
+        DB::beginTransaction();
+
         Log::info('Начало создания вакансии у пользователя с ID: ' . Auth::id());
 
         try {
@@ -105,8 +127,13 @@ class VacancyController extends Controller
 
             Log::info('Создание вакансии у пользователя с ID: ' . Auth::id() . ' завершено успешно.');
 
+            DB::commit();
+
             return redirect()->route('vacancy.show', $vacancy->id)->with('success', 'Вакансия успешно создана!');
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
             Log::error('Ошибка при создании вакансии: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['error_vacancy' => 'Ошибка при создании новой вакансии. Попробуйте снова.']);
