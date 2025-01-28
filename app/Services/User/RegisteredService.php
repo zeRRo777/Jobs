@@ -19,35 +19,13 @@ class RegisteredService
      */
     public function registerUser(array $dataValidated): User
     {
-        Log::info('Начало регистрации обычного пользователя');
+        $user = User::create($dataValidated);
 
-        DB::beginTransaction();
+        event(new UserRegistered($user));
 
-        try {
-            $user = User::create($dataValidated);
+        Auth::login($user, true);
 
-            Log::info('Был создан пользователь с ID: ' . $user->id);
-
-            event(new UserRegistered($user));
-
-            Log::info('Сработало событие при регистрации пользователя с ID: ' . $user->id);
-
-            Auth::login($user, true);
-
-            Log::info('Пользователь авторизован с ID: ' . $user->id);
-
-            DB::commit();
-
-            Log::info('Пользователь успешно зарегестрирован с ID: ' . $user->id);
-
-            return $user;
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
-
-            throw $e;
-        }
+        return $user;
     }
 
     /**
@@ -59,54 +37,28 @@ class RegisteredService
      */
     public function registerAdmin(array $dataValidated): User
     {
+        if (isset($dataValidated['company'])) {
+            $company = new Company();
+            $company->name = $dataValidated['company'];
+            $company->save();
 
-        Log::info('Начало регистрации админа');
+            $dataValidated['company_id'] = $company->id;
+            unset($dataValidated['company']);
+        } elseif (isset($dataValidated['secret_code'])) {
+            $company = Company::where('secret_code', $dataValidated['secret_code'])->firstOrFail();
+            $company->secret_code = null;
+            $company->save();
 
-        DB::beginTransaction();
-
-        try {
-            if (isset($dataValidated['company'])) {
-                $company = new Company();
-                $company->name = $dataValidated['company'];
-                $company->save();
-
-                Log::info('Новая компания успешно создана с ID: ' . $company->id);
-
-                $dataValidated['company_id'] = $company->id;
-                unset($dataValidated['company']);
-            } elseif (isset($dataValidated['secret_code'])) {
-                $company = Company::where('secret_code', $dataValidated['secret_code'])->firstOrFail();
-                $company->secret_code = null;
-                $company->save();
-
-                Log::info('Компания с секретным кодом успешно найдена с ID: ' . $company->id);
-
-                $dataValidated['company_id'] = $company->id;
-                unset($dataValidated['secret_code']);
-            }
-
-            $user = User::create($dataValidated);
-
-            Log::info('Был создан админ с ID: ' . $user->id);
-
-            event(new UserRegistered($user));
-
-            Log::info('Сработало событие при регистрации админа с ID: ' . $user->id);
-
-            Auth::login($user, true);
-
-            Log::info('Пользователь авторизован с ID: ' . $user->id);
-
-            DB::commit();
-
-            Log::info('Пользователь успешно зарегестрирован с ID: ' . $user->id);
-            return $user;
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Ошибка при регистрации администратора: ' . $e->getMessage(), ['exception' => $e]);
-
-            throw $e;
+            $dataValidated['company_id'] = $company->id;
+            unset($dataValidated['secret_code']);
         }
+
+        $user = User::create($dataValidated);
+
+        event(new UserRegistered($user));
+
+        Auth::login($user, true);
+
+        return $user;
     }
 }

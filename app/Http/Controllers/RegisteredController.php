@@ -8,6 +8,7 @@ use App\Http\Requests\RegisteredRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use App\Services\User\RegisteredService;
+use Illuminate\Support\Facades\DB;
 
 class RegisteredController extends Controller
 {
@@ -20,11 +21,24 @@ class RegisteredController extends Controller
 
     public function store(RegisteredRequest $request): RedirectResponse
     {
+
+        DB::beginTransaction();
+
+        Log::info('Начало регистрации обычного пользователя');
+
         try {
-            $this->registeredService->registerUser($request->validated());
+            $user = $this->registeredService->registerUser($request->validated());
+
+            Log::info('Пользователь успешно зарегестрирован с ID: ' . $user->id);
+
+            DB::commit();
 
             return redirect()->route('vacancies');
         } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            Log::error('Ошибка при регистрации пользователя: ' . $e->getMessage(), ['exception' => $e]);
 
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать пользователя. Попробуйте снова.']);
         }
@@ -32,11 +46,23 @@ class RegisteredController extends Controller
 
     public function admin_store(AdminRegisteredRequest $request): RedirectResponse
     {
+        DB::beginTransaction();
+
+        Log::info('Начало регистрации админа');
+
         try {
             $user = $this->registeredService->registerAdmin($request->validated());
 
+            DB::commit();
+
+            Log::info('Пользователь успешно зарегестрирован с ID: ' . $user->id);
+
             return redirect()->route('company.show', $user->company->id);
         } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            Log::error('Ошибка при регистрации администратора: ' . $e->getMessage(), ['exception' => $e]);
 
             return redirect()->back()->withErrors(['error' => 'Не удалось зарегистрировать администратора. Попробуйте снова.']);
         }
