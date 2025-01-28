@@ -19,7 +19,6 @@ use Illuminate\View\View;
 
 class CompanyController extends Controller
 {
-
     protected $companyService;
 
     protected $companyFilterService;
@@ -59,24 +58,74 @@ class CompanyController extends Controller
     {
         $validatedData = $request->validated();
 
-        $this->companyService->updateCompany($company, $validatedData);
+        DB::beginTransaction();
 
-        return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
+        Log::info('Начало обновление компании с ID: ' . $company->id . ' и пользователя с ID: ' . Auth::id());
+
+        try {
+            $this->companyService->updateCompany($company, $validatedData);
+
+            DB::commit();
+
+            Log::info('Обновлениеко компании прошло успешно с ID: ' . $company->id);
+
+            return redirect()->route('company.show', $company->id)->with('success', 'Данные компании успешно обновлены!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Ошибка при обновлении компании: ' . $e->getMessage(), ['exception' => $e]);
+
+            return redirect()->route('company.show', $company->id)->with('error', 'Ошибка при обновлении данных компании!');
+        }
     }
 
     public function generateSecretCode(User $user, Company $company): RedirectResponse
     {
         Gate::authorize('generateCode', $company);
 
-        $this->companyService->generateSecretCode($company);
+        DB::beginTransaction();
 
-        return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
+        Log::info('Начало генерации кода для кмопании с ID: ' . $company->id . ' и пользователя с ID: ' . $user->id);
+
+        try {
+            $this->companyService->generateSecretCode($company);
+
+            Log::info('Сгенерированный код добавлен компании с ID: ' . $company->id);
+
+            DB::commit();
+
+            return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно сгенерирован!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Ошибка генерации секретного кода: ' . $e->getMessage(), ['exception' => $e]);
+
+            return redirect()->route('profile', $user->id)->with('error', 'Ошибка при генерации секретного кода!');
+        }
     }
 
     public function deleteSecretCode(User $user, Company $company)
     {
         Gate::authorize('generateCode', $company);
-        $this->companyService->deleteSecretCode($company);
-        return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно удален!');
+
+        DB::beginTransaction();
+
+        Log::info('Начало удаления секретного кода для кмопании с ID: ' . $company->id . ' и пользователя с ID: ' . $user->id);
+
+        try {
+            $this->companyService->deleteSecretCode($company);
+
+            Log::info('Сгенерированный код удален у компании с ID: ' . $company->id);
+
+            DB::commit();
+
+            return redirect()->route('profile', $user->id)->with('success', 'Секретный код успешно удален!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Ошибка удаления секретного кода: ' . $e->getMessage(), ['exception' => $e]);
+
+            return redirect()->route('profile', $user->id)->with('error', 'Ошибка при удалении секретного кода!');
+        }
     }
 }

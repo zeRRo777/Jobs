@@ -16,7 +16,6 @@ use Illuminate\Support\Str;
 
 class CompanyService
 {
-
     public function getPopularCompanies(): Collection
     {
         return Company::with('cities')->withCount('vacancies')
@@ -70,39 +69,31 @@ class CompanyService
 
     public function updateCompany(Company $company, array $data)
     {
-        DB::beginTransaction();
-        try {
-            if (!empty($data['new_cities'])) {
-                $newCityIds = $this->createCities($data['new_cities']);
-                $data['cities'] = array_merge($data['cities'] ?? [], $newCityIds);
-            }
 
-            $data['cities'] = $data['cities'] ?? [];
-            $company->cities()->sync($data['cities']);
-
-            if (isset($data['delete_photo']) && $data['delete_photo'] == 'on') {
-                $this->deletePhoto($company->photo);
-                $company->photo = null;
-            }
-
-            if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
-                $path = $this->uploadPhoto($company, $data['photo']);
-                if ($path) {
-                    $data['photo'] = $path;
-                } else {
-                    throw new \Exception('Не удалось сохранить фото. Попробуйте снова.');
-                }
-            }
-
-            unset($data['new_cities'], $data['cities'], $data['company_id'], $data['delete_photo']);
-            $company->update($data);
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Ошибка при обновлении компании: ' . $e->getMessage(), ['exception' => $e]);
-            throw $e;
+        if (!empty($data['new_cities'])) {
+            $newCityIds = $this->createCities($data['new_cities']);
+            $data['cities'] = array_merge($data['cities'] ?? [], $newCityIds);
         }
+
+        $data['cities'] = $data['cities'] ?? [];
+        $company->cities()->sync($data['cities']);
+
+        if (isset($data['delete_photo']) && $data['delete_photo'] == 'on') {
+            $this->deletePhoto($company->photo);
+            $company->photo = null;
+        }
+
+        if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+            $path = $this->uploadPhoto($company, $data['photo']);
+            if ($path) {
+                $data['photo'] = $path;
+            } else {
+                throw new \Exception('Не удалось сохранить фото. Попробуйте снова.');
+            }
+        }
+
+        unset($data['new_cities'], $data['cities'], $data['company_id'], $data['delete_photo']);
+        $company->update($data);
     }
 
     protected function createCities(string $citiesInput): array
@@ -135,28 +126,12 @@ class CompanyService
 
     public function generateSecretCode(Company $company, int $length = 10): void
     {
-        DB::beginTransaction();
-        try {
-            $secretCode = Str::random($length);
-            $company->update(['secret_code' => $secretCode]);
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Ошибка генерации секретного кода: ' . $e->getMessage(), ['exception' => $e]);
-            throw $e;
-        }
+        $secretCode = Str::random($length);
+        $company->update(['secret_code' => $secretCode]);
     }
 
     public function deleteSecretCode(Company $company): void
     {
-        DB::beginTransaction();
-        try {
-            $company->update(['secret_code' => null]);
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Ошибка при удалении секретного кода: ' . $e->getMessage(), ['exception' => $e]);
-            throw $e;
-        }
+        $company->update(['secret_code' => null]);
     }
 }
