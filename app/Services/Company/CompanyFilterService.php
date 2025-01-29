@@ -13,7 +13,7 @@ class CompanyFilterService
     protected array $data = [];
     protected Builder $query;
 
-    public function __construct($data)
+    public function __construct($data = [])
     {
         $this->data = $data;
         $this->query = Company::query();
