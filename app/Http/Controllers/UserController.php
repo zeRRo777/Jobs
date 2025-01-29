@@ -14,8 +14,11 @@ use App\Models\City;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Vacancy;
+use App\Services\User\UserCompanyService;
 use App\Services\User\UserFilterService;
+use App\Services\User\UserSecurityService;
 use App\Services\User\UserService;
+use App\Services\User\UserVacancyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,25 +30,33 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-
     protected $userService;
     protected $userFilterService;
+    protected $securityService;
+    protected $companyService;
+    protected $vacancyService;
 
-    public function __construct(UserService $userService, UserFilterService $userFilterService)
-    {
+    public function __construct(
+        UserService $userService,
+        UserFilterService $userFilterService,
+        UserSecurityService $securityService,
+        UserCompanyService $companyService,
+        UserVacancyService $vacancyService
+    ) {
         $this->userService = $userService;
         $this->userFilterService = $userFilterService;
+        $this->securityService = $securityService;
+        $this->companyService = $companyService;
+        $this->vacancyService = $vacancyService;
     }
 
     public function index(User $user): View
     {
-        $cities = City::all()->map(function ($city) use ($user) {
-            return [
-                'id' => $city->id,
-                'name' => $city->name,
-                'active' => $user->cities->contains($city)
-            ];
-        });
+        $cities = City::all()->map(fn($city) => [
+            'id' => $city->id,
+            'name' => $city->name,
+            'active' => $user->cities->contains($city)
+        ]);
 
         return view('pages.profile', compact('user', 'cities'));
     }
@@ -55,31 +66,31 @@ class UserController extends Controller
 
         $validatedData = $request->validated();
 
-        DB::beginTransaction();
-
-        Log::info('Начало транзакции для обновления пользователя с ID: ' . $user->id);
+        Log::info('Начало  обновления пользователя с ID: ' . $user->id);
 
         try {
+            DB::transaction(function () use ($user, $validatedData) {
 
-            $this->userService->updateUser($user, $validatedData);
+                $this->userService->updateUser($user, $validatedData);
 
-            DB::commit();
+                Log::info('Успешное обновления пользователя с ID: ' . $user->id);
+            });
 
-            Log::info('Транзакция успешно завершена для пользователя с ID: ' . $user->id);
+            return redirect()->route('profile', $user->id)->with('success', 'Данные успешно обновлены!');
+        } catch (\Throwable $e) {
+            Log::error('Ошибка обновления пользователя с ID: ' . $user->id, [
+                'error' => $e->getMessage(),
+            ]);
 
-            return redirect()->route('profile', $user->id)->with('success', 'Данные пользователя успешно обновлены!');
-        } catch (\Exception $e) {
-
-            DB::rollBack();
-
-            Log::error('Ошибка при обновлении пользователя с ID: ' . $user->id . '. Ошибка: ' . $e->getMessage());
-
-            return back()->withErrors(['photo' => $e->getMessage()]);
+            return back()
+                ->withErrors(['error' => 'Произошла ошибка при обновлении данных'])
+                ->withInput();
         }
     }
 
     public function changePassword(ChangePasswordRequest $request): RedirectResponse
     {
+
         $validatedData = $request->validated();
 
         $user = Auth::user();
@@ -87,58 +98,42 @@ class UserController extends Controller
         Log::info('Начало смены пароля для пользователя с ID: ' . $user->id);
 
         try {
-            DB::beginTransaction();
+            DB::transaction(function () use ($validatedData) {
+                $this->securityService->changePassword($user, $validatedData['new_password']);
+            });
 
-            Log::info('Начало транзакции для смены пароля пользователя с ID: ' . $user->id);
-
-            $user->password = Hash::make($validatedData['new_password']);
-            $user->save();
-
-            DB::commit();
             Log::info('Транзакция успешно завершена. Пароль пользователя с ID: ' . $user->id . ' изменен.');
 
             Auth::logout();
-
             $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
-            Log::info('Пользователь с ID: ' . $user->id . ' вышел из системы после смены пароля.');
 
             return redirect()->route('login')->with('success', 'Пароль успешно изменен!');
         } catch (\Exception $e) {
-            DB::rollBack();
+
             Log::error('Ошибка при смене пароля для пользователя с ID: ' . $user->id . '. Ошибка: ' . $e->getMessage());
-            return back()->withErrors(['password' => 'Не удалось изменить пароль. Пожалуйста, попробуйте снова.']);
+            return back()
+                ->withErrors(['password' => 'Не удалось изменить пароль. Пожалуйста, попробуйте снова.']);
         }
     }
 
     public function delete(DeleteUserRequest $request): RedirectResponse
     {
-        $request->validated();
-
-        $user = Auth::user();
-
-        Log::info('Начало удаления аккаунта пользователя с ID: ' . $user->id);
-
         try {
+            Log::info('Начало удаления аккаунта пользователя с ID: ' . Auth::id());
 
-            Auth::logout();
-            Log::info('Пользователь с ID: ' . $user->id . ' вышел из системы перед удалением аккаунта.');
+            DB::transaction(function () use ($request) {
 
-            $user->delete();
+                $this->securityService->deleteUser(Auth::user());
+            });
 
-            Log::info('Аккаунт пользователя с ID: ' . $user->id . ' успешно удален.');
+            Log::info('Пользователь  с ID: ' . Auth::id() . ' успешно удален.');
 
             $request->session()->invalidate();
 
-            $request->session()->regenerateToken();
-
-            Log::info('Процесс удаления аккаунта пользователя с ID: ' . $user->id . ' завершен успешно.');
-
-            return redirect()->route('register')->with('success', 'Аккаунт был успешно удален!');
+            return redirect()->route('register')->with('success', 'Аккаунт успешно удален!');
         } catch (\Exception $e) {
-            Log::error('Ошибка при удалении аккаунта пользователя с ID: ' . $user->id . '. Ошибка: ' . $e->getMessage());
+
+            Log::error('Ошибка при удалении аккаунта пользователя с ID: ' . Auth::id() . '. Ошибка: ' . $e->getMessage());
 
             return back()->withErrors(['error' => 'Не удалось удалить аккаунт. Пожалуйста, попробуйте снова.']);
         }
@@ -146,15 +141,20 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
-        $vacancies = Vacancy::where('company_id', '=', Auth::user()->company->id)->get()
-            ->map(function ($vacancy) use ($user) {
-                return [
-                    'id' => $vacancy->id,
-                    'title' => $vacancy->title,
-                    'isLiked' => $vacancy->userLiked->contains($user),
-                    'isOffered' => $vacancy->offeredUsers->contains($user)
-                ];
-            });
+        $admin = Auth::user();
+
+        $admin->load(['company.vacancies' => function ($query) {
+            $query->with(['userLiked:id', 'offeredUsers:id']);
+        }]);
+
+        $vacancies = $admin->company->vacancies->map(function ($vacancy) use ($user) {
+            return [
+                'id' => $vacancy->id,
+                'title' => $vacancy->title,
+                'isLiked' => $vacancy->userLiked->contains('id', $user->id),
+                'isOffered' => $vacancy->offeredUsers->contains('id', $user->id)
+            ];
+        });
 
         return view('pages.users.show', compact('user', 'vacancies'));
     }
@@ -183,43 +183,19 @@ class UserController extends Controller
     {
         $validatedData = $request->validated();
 
-        DB::beginTransaction();
+        Log::info('Начало процесса предложения работы пользователю с ID : ' . $user->id);
 
         try {
-
-            Log::info('Начало процесса предложения работы пользователю с ID : ' . $user->id);
-
-            foreach ($validatedData['vacancies'] as $vacancyId) {
-
-                $vacancy = Vacancy::findOrFail($vacancyId);
-
-                Log::info('Начался процесс предложения работы по вакансии с ID: ' . $vacancyId . ' для пользователя с ID: ' . $user->id);
-
-                Gate::authorize('offer', $vacancy);
-
-                Mail::to($user)->send(new OfferVacancy($vacancy, $user, Auth::user()));
-
-                Log::info('Отправлено письмо с предложением работы по вакансии с ID: ' . $vacancyId . ' для пользователя с ID: ' . $user->id);
-
-                if (!$vacancy->offeredUsers->contains($user)) {
-
-                    $vacancy->offeredUsers()->attach($user->id);
-
-                    Log::info('Пользователю с ID: ' . $user->id . ' добавлена связь в бд с вакансией ID: ' . $vacancyId);
-                }
-            }
-
-            DB::commit();
+            DB::transaction(function () use ($user, $validatedData) {
+                $this->vacancyService->sendOffers($user, $validatedData['vacancies']);
+            });
 
             Log::info('Предложения работы успешно завершено для пользователя с ID: ' . $user->id);
 
             return redirect()->route('user.show', $user->id)->with('success', 'Письма о предложении работы успешно отправлены!');
         } catch (\Exception $e) {
-            DB::rollBack();
             Log::error('Ошибка во время предложения работы для Пользователя с ID: ' . $user->id, [
                 'error' => $e->getMessage(),
-                'vacancy_id' => $vacancyId ?? null,
-                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->route('user.show', $user->id)->withErrors(['error' => 'Произошла ошибка при отправке письма. Попробуйте еще раз!']);
@@ -235,22 +211,15 @@ class UserController extends Controller
 
         Log::info('Начало удаление компании у пользователя с ID: ' . $user->id);
 
-        DB::beginTransaction();
-
         try {
-            $user->company()->dissociate();
-
-            $user->save();
-
-            DB::commit();
+            DB::transaction(function () {
+                $this->companyService->removeCompany($user);
+            });
 
             Log::info('Компания успешно удалена у пользователя с ID: ' . $user->id);
 
             return redirect()->route('profile', $user->id)->with('success', 'Компания успешно удалена!');
         } catch (\Exception $e) {
-
-            DB::rollBack();
-
             Log::error('Ошибка при удалении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
             return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при удалении компании! Попробуйте еще раз!']);
         }
@@ -262,36 +231,20 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        DB::beginTransaction();
+        Log::info('Начало добавления компании для пользователя с ID ' . $user->id);
 
         try {
+            DB::transaction(function () use ($validatedData, $user) {
+                $company = Company::where('secret_code', $validatedData['secret_code'])->firstOrFail();
+                $this->companyService->attachCompany($user, $company);
+            });
 
-            Log::info('Попытка добавления компании для пользователя с ID ' . $user->id);
-
-            $company = Company::where('secret_code', '=', $validatedData['secret_code'])->firstOrFail();
-
-            $vacancyIds = $company->vacancies()->pluck('id');
-
-            $user->offeredVacancies()->detach($vacancyIds);
-
-            $user->likedVacancies()->detach($vacancyIds);
-
-            $user->company()->associate($company);
-            $user->save();
-
-            Log::info('Компания с ID ' . $company->id . ' добавлена пользователем с ID ' . $user->id);
-
-            $company->secret_code = null;
-            $company->save();
-
-            DB::commit();
-
-            Log::info('Транзакция успешно завершена для пользователя с ID ' . $user->id);
+            Log::info('Компания с ID ' . $user->company->id . 'успешно добавлена пользователем с ID ' . $user->id);
 
             return redirect()->route('profile', $user->id)->with('success', 'Компания успешно добавлена!');
         } catch (\Exception $e) {
-            DB::rollBack();
             Log::error('Ошибка при добавлении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
+
             return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при добавлении компании! Попробуйте еще раз!']);
         }
     }

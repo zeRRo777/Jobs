@@ -3,11 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Mail\ChangeEmailMail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
@@ -97,5 +100,11 @@ class User extends Authenticatable
                 }
             }
         });
+    }
+
+    public function sendNoficationAfterUpdateEmail(): void
+    {
+        Mail::to($this)->send(new ChangeEmailMail($this));
+        session()->flash('warning', 'Email изменен. Письмо для подтверждения отправлено на ваш новый адрес.');
     }
 }

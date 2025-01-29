@@ -48,34 +48,30 @@ class UserFilterService
 
     public function getProfessionFilterData(): Collection
     {
-        return User::where('id', '!=', auth()->id())
+        return User::query()
+            ->where('id', '!=', auth()->id())
             ->whereNotNull('profession')
+            ->select('profession')
             ->distinct()
-            ->pluck('profession')
-            ->map(
-                function ($name) {
-                    return [
-                        'id' => $name,
-                        'name' => $name,
-                        'active' => in_array($name, $this->data['professions'] ?? []),
-                    ];
-                }
-            );
+            ->get()
+            ->map(fn($user) => [
+                'id' => $user->profession,
+                'name' => $user->profession,
+                'active' => in_array($user->profession, $this->data['professions'] ?? [])
+            ]);
     }
 
     public function getCitiesFilterData(): Collection
     {
-        return City::whereHas('users', function ($q) {
-            $q->where('id', '!=', auth()->id());
-        })->pluck('name', 'id')
-            ->unique()
-            ->map(function ($name, $id) {
-                return [
-                    'id' => $id,
-                    'name' => $name,
-                    'active' => in_array($id, $this->data['cities'] ?? []),
-                ];
-            });
+        return City::query()
+            ->whereHas('users', fn($q) => $q->where('id', '!=', auth()->id()))
+            ->select('id', 'name')
+            ->get()
+            ->map(fn($city) => [
+                'id' => $city->id,
+                'name' => $city->name,
+                'active' => in_array($city->id, $this->data['cities'] ?? [])
+            ]);
     }
 
     public function applyFilters(): Builder
