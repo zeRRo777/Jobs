@@ -2,13 +2,10 @@
 
 namespace App\Services\User;
 
-use App\Mail\ChangeEmailMail;
 use App\Models\City;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class UserService

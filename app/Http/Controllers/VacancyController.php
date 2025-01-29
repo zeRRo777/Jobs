@@ -6,9 +6,6 @@ use App\Http\Requests\SmartFilterVacanciesRequest;
 use App\Http\Requests\StoreVacancyRequest;
 use App\Http\Requests\UpdateVacancyRequest;
 use App\Models\Vacancy;
-use App\Models\City;
-use App\Models\Tag;
-use App\Models\Company;
 use App\Models\User;
 use App\Services\Vacancy\VacancyDataService;
 use App\Services\Vacancy\VacancyFilterService;
@@ -21,9 +18,9 @@ use Illuminate\View\View;
 
 class VacancyController extends Controller
 {
-    protected $vacancyService;
-    protected $vacancyFilterService;
-    protected $vacancyDataService;
+    protected VacancyService $vacancyService;
+    protected VacancyFilterService $vacancyFilterService;
+    protected VacancyDataService $vacancyDataService;
 
     public function __construct(
         VacancyService $vacancyService,
@@ -140,7 +137,7 @@ class VacancyController extends Controller
         }
     }
 
-    public function likes(User $user)
+    public function likes(User $user): View
     {
         $vacancies = $user->likedVacancies()->paginate(10);
 

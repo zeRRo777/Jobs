@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\Exists;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class SmartFilterCompaniesRequest extends FormRequest
 {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\User\UserVerificationService;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ class VerifyController extends Controller
         private UserVerificationService $userVerificationService
     ) {}
 
-    public function verify(EmailVerificationRequest $request)
+    public function verify(EmailVerificationRequest $request): RedirectResponse
     {
 
         DB::beginTransaction();

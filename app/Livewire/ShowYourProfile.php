@@ -3,18 +3,19 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class ShowYourProfile extends Component
 {
     public bool $checked = false;
 
-    public function mount()
+    public function mount(): void
     {
         $this->checked = Auth::user()->show;
     }
 
-    public function updatedChecked(bool $value)
+    public function updatedChecked(bool $value): void
     {
         $this->checked = $value;
 
@@ -29,7 +30,7 @@ class ShowYourProfile extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.show-your-profile');
     }

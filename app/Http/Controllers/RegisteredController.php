@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserRegistered;
 use App\Http\Requests\AdminRegisteredRequest;
 use App\Http\Requests\RegisteredRequest;
 use Illuminate\Http\RedirectResponse;

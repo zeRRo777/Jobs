@@ -4,7 +4,6 @@ namespace App\Services\Vacancy;
 
 use App\Models\Vacancy;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class VacancyFilterService
@@ -12,7 +11,7 @@ class VacancyFilterService
     protected array $data = [];
     protected Builder $query;
 
-    public function __construct(array $data = [])
+    public function __construct($data)
     {
         $this->data = $data;
         $this->query = Vacancy::query()->with([

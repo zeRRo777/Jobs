@@ -6,7 +6,7 @@ use App\Models\User;
 
 class UserVerificationService
 {
-    public function verifyUser(User $user)
+    public function verifyUser(User $user): void
     {
         $user->show = true;
 

@@ -5,12 +5,9 @@ namespace App\Services\Company;
 use App\Models\City;
 use App\Models\Company;
 use App\Models\Tag;
-use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -67,7 +64,7 @@ class CompanyService
         return compact('company', 'vacancies', 'cities', 'tags_vacancy', 'cities_vacancy');
     }
 
-    public function updateCompany(Company $company, array $data)
+    public function updateCompany(Company $company, array $data): void
     {
 
         if (!empty($data['new_cities'])) {

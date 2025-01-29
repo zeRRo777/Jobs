@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SmartFilterCompaniesRequest;
 use App\Http\Requests\UpdateCompanyRequest;
-use App\Models\City;
 use App\Models\Company;
-use App\Models\Tag;
 use App\Models\User;
 use App\Services\Company\CompanyFilterService;
 use App\Services\Company\CompanyService;
@@ -19,9 +17,9 @@ use Illuminate\View\View;
 
 class CompanyController extends Controller
 {
-    protected $companyService;
+    protected CompanyService $companyService;
 
-    protected $companyFilterService;
+    protected CompanyFilterService $companyFilterService;
 
     public function __construct(CompanyService $companyService, CompanyFilterService $companyFilterService)
     {
@@ -104,7 +102,7 @@ class CompanyController extends Controller
         }
     }
 
-    public function deleteSecretCode(User $user, Company $company)
+    public function deleteSecretCode(User $user, Company $company): RedirectResponse
     {
         Gate::authorize('generateCode', $company);
 

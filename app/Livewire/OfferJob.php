@@ -5,15 +5,16 @@ namespace App\Livewire;
 use App\Mail\OfferVacancy;
 use App\Models\User;
 use App\Models\Vacancy;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class OfferJob extends Component
 {
-
     public Vacancy $vacancy;
 
     public User $user;
@@ -21,9 +22,8 @@ class OfferJob extends Component
 
     public bool $isOffer = false;
 
-    public function mount(User $user, Vacancy $vacancy)
+    public function mount(User $user, Vacancy $vacancy): ?RedirectResponse
     {
-
         $this->admin = Auth::user();
 
         if (!$this->admin) {
@@ -35,7 +35,7 @@ class OfferJob extends Component
         $this->isOffer = $user->offeredVacancies->contains($vacancy->id);
     }
 
-    public function offer()
+    public function offer(): void
     {
         Gate::authorize('offer', $this->vacancy);
 
@@ -60,7 +60,7 @@ class OfferJob extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.offer-job');
     }

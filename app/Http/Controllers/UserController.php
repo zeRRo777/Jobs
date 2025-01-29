@@ -9,11 +9,9 @@ use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\SmartFilterUsersRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserOffersRequest;
-use App\Mail\OfferVacancy;
 use App\Models\City;
 use App\Models\Company;
 use App\Models\User;
-use App\Models\Vacancy;
 use App\Services\User\UserCompanyService;
 use App\Services\User\UserFilterService;
 use App\Services\User\UserSecurityService;
@@ -22,10 +20,8 @@ use App\Services\User\UserVacancyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -143,11 +139,11 @@ class UserController extends Controller
     {
         $admin = Auth::user();
 
-        $admin->load(['company.vacancies' => function ($query) {
+        $admin->load(['company.vacancies' => function ($query): void {
             $query->with(['userLiked:id', 'offeredUsers:id']);
         }]);
 
-        $vacancies = $admin->company->vacancies->map(function ($vacancy) use ($user) {
+        $vacancies = $admin->company->vacancies->map(function ($vacancy) use ($user): array {
             return [
                 'id' => $vacancy->id,
                 'title' => $vacancy->title,
@@ -159,7 +155,7 @@ class UserController extends Controller
         return view('pages.users.show', compact('user', 'vacancies'));
     }
 
-    public function all(SmartFilterUsersRequest $request)
+    public function all(SmartFilterUsersRequest $request): View
     {
         $this->userFilterService->setData($request->validated());
 
@@ -179,7 +175,7 @@ class UserController extends Controller
         return view('pages.users.index', compact('users', 'cities', 'professions'));
     }
 
-    public function offers(User $user, UserOffersRequest $request)
+    public function offers(User $user, UserOffersRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
@@ -202,9 +198,8 @@ class UserController extends Controller
         }
     }
 
-    public function deleteCompany(DeleteUserCompanyRequest $request)
+    public function deleteCompany(DeleteUserCompanyRequest $request): RedirectResponse
     {
-
         $request->validated();
 
         $user = Auth::user();
@@ -225,7 +220,7 @@ class UserController extends Controller
         }
     }
 
-    public function addCompany(AddUserCompanyRequest $request)
+    public function addCompany(AddUserCompanyRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 

@@ -5,9 +5,6 @@ namespace App\Services\Vacancy;
 use App\Models\Vacancy;
 use App\Models\City;
 use App\Models\Tag;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class VacancyService
 {

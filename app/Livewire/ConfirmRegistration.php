@@ -6,11 +6,12 @@ use App\Mail\RegistrationMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class ConfirmRegistration extends Component
 {
-    public function verify()
+    public function verify(): void
     {
         $user = Auth::user();
 
@@ -27,7 +28,7 @@ class ConfirmRegistration extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.confirm-registration');
     }

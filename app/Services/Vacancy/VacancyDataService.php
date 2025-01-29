@@ -10,9 +10,9 @@ use Illuminate\Support\Collection;
 
 class VacancyDataService
 {
-    protected array $data;
+    protected array $data = [];
 
-    public function __construct(array $data = [])
+    public function __construct($data)
     {
         $this->data = $data;
     }

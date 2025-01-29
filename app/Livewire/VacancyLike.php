@@ -2,10 +2,11 @@
 
 namespace App\Livewire;
 
-use App\Models\User;
 use App\Models\Vacancy;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class VacancyLike extends Component
@@ -19,7 +20,7 @@ class VacancyLike extends Component
 
     public string $successMessage = '';
 
-    public function mount(Vacancy $vacancy)
+    public function mount($vacancy): ?RedirectResponse
     {
         $user = Auth::user();
 
@@ -31,7 +32,7 @@ class VacancyLike extends Component
         $this->isLike = $this->vacancy->userLiked->contains($user->id);
     }
 
-    public function like()
+    public function like(): void
     {
         Gate::authorize('like', $this->vacancy);
 
@@ -44,7 +45,7 @@ class VacancyLike extends Component
         }
     }
 
-    public function unlike()
+    public function unlike(): void
     {
         Gate::authorize('like', $this->vacancy);
 
@@ -57,7 +58,7 @@ class VacancyLike extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.vacancy-like');
     }

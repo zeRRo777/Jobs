@@ -7,7 +7,8 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Validation\Validator;
-class NotEqual implements ValidationRule, DataAwareRule, ValidatorAwareRule
+
+class Equal implements ValidationRule, DataAwareRule, ValidatorAwareRule
 {
 
     public function __construct(private string $other)
@@ -21,9 +22,9 @@ class NotEqual implements ValidationRule, DataAwareRule, ValidatorAwareRule
      * @var array<string, mixed>
      */
     protected $data = [];
- 
+
     // ...
- 
+
     /**
      * Set the data under validation.
      *
@@ -32,7 +33,7 @@ class NotEqual implements ValidationRule, DataAwareRule, ValidatorAwareRule
     public function setData(array $data): static
     {
         $this->data = $data;
- 
+
         return $this;
     }
 
@@ -42,16 +43,16 @@ class NotEqual implements ValidationRule, DataAwareRule, ValidatorAwareRule
      * @var \Illuminate\Validation\Validator
      */
     protected $validator;
- 
+
     // ...
- 
+
     /**
      * Set the current validator.
      */
     public function setValidator(Validator $validator): static
     {
         $this->validator = $validator;
- 
+
         return $this;
     }
 
@@ -62,13 +63,13 @@ class NotEqual implements ValidationRule, DataAwareRule, ValidatorAwareRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        
+
         if ($value !== $this->data[$this->other]) {
 
             $attributeName = $this->validator->getDisplayableAttribute($attribute);
             $otherAttributeName = $this->validator->getDisplayableAttribute($this->other);
-            
-            $fail($attributeName .' должен быть равен ' . $otherAttributeName .'.');
+
+            $fail($attributeName . ' должен быть равен ' . $otherAttributeName . '.');
         }
     }
 }

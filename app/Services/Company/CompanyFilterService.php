@@ -7,14 +7,13 @@ use App\Models\Company;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 
 class CompanyFilterService
 {
-    protected $data;
+    protected array $data = [];
     protected Builder $query;
 
-    public function __construct(array $data = [])
+    public function __construct($data)
     {
         $this->data = $data;
         $this->query = Company::query();

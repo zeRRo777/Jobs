@@ -2,10 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Company;
 use App\Models\User;
 use App\Models\Vacancy;
-use Illuminate\Auth\Access\Response;
 
 class VacancyPolicy
 {
