@@ -4,12 +4,19 @@ namespace App\Services\User;
 
 use App\Models\City;
 use App\Models\User;
+use App\Services\Common\FileService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 
 class UserService
 {
+
+    protected FileService $fileService;
+    public function __construct()
+    {
+        $this->fileService = new FileService();
+    }
+
     public function updateUser(User $user, array $data)
     {
         $this->handleCities($user, $data);
@@ -17,36 +24,6 @@ class UserService
         $this->updateUserData($user, $data);
 
         return $user;
-    }
-
-    protected function createCities(string $citiesInput): array
-    {
-        $cities = explode(',', $citiesInput);
-        $cities = array_map('trim', $cities);
-        $cityIds = [];
-        foreach ($cities as $cityName) {
-            $city = new City();
-            $city->name = $cityName;
-            $city->save();
-            $cityIds[] = $city->id;
-        }
-        return $cityIds;
-    }
-
-    protected function uploadPhoto(User $user, UploadedFile $newPhoto): string|bool
-    {
-        if ($user->photo) {
-            $this->deletePhoto($user->photo);
-        }
-
-        return $newPhoto->store('user_photos', 'public');
-    }
-
-    protected function deletePhoto(string $path): void
-    {
-        if (Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
-        }
     }
 
     protected function handleCities(User $user, array &$data): void
@@ -61,13 +38,14 @@ class UserService
 
     protected function handlePhoto(User $user, array &$data): void
     {
-        if ($data['delete_photo'] ?? false) {
-            Storage::disk('public')->delete($user->photo);
+        if (isset($data['delete_photo']) && $data['delete_photo'] == 'on') {
+
+            $this->fileService->deletePhoto($user->photo);
             $user->photo = null;
         }
 
-        if ($data['photo'] ?? false) {
-            $path = $data['photo']->store('user_photos', 'public');
+        if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+            $path = $this->fileService->uploadPhoto($user, $data['photo']);
             $user->photo = $path;
         }
     }
@@ -76,8 +54,7 @@ class UserService
     {
         $emailChanged = isset($data['email']) && $data['email'] !== $user->email;
 
-        $user->fill(Arr::except($data, ['new_cities', 'cities', 'delete_photo']));
-
+        $user->fill(Arr::except($data, ['new_cities', 'cities', 'delete_photo', 'user_id', 'photo']));
 
         if ($emailChanged) {
             $user->email_verified_at = null;

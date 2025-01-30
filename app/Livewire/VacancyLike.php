@@ -20,16 +20,11 @@ class VacancyLike extends Component
 
     public string $successMessage = '';
 
-    public function mount($vacancy): ?RedirectResponse
+    public function mount($vacancy): void
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('login')->withErrors(['error' => 'Перед тем как откликнуться на вакансию, сначала авторизуйтесь!']);
-        }
         $this->vacancy = $vacancy;
 
-        $this->isLike = $this->vacancy->userLiked->contains($user->id);
+        $this->isLike = $this->vacancy->userLiked->contains(Auth::id());
     }
 
     public function like(): void

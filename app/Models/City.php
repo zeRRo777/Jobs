@@ -27,4 +27,17 @@ class City extends Model
     {
         return $this->hasMany(Vacancy::class);
     }
+
+    static function firstOrCreateMany(array $data)
+    {
+        $cities = array_map('trim', $data);
+        $cityIds = [];
+        foreach ($cities as $cityName) {
+            $city = new City();
+            $city->name = $cityName;
+            $city->save();
+            $cityIds[] = $city->id;
+        }
+        return $cityIds;
+    }
 }

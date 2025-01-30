@@ -28,8 +28,7 @@ Route::middleware('auth')->group(function () {
             ->can('delete', 'vacancy');
 
         Route::post('/companies/{company}/vacancyCreate',  'store')
-            ->name('vacancy.store')
-            ->can('createVacancy', 'company');
+            ->name('vacancy.store');
 
         Route::get('/vacancies/likes/{user}', 'likes')
             ->name('vacancy.likes')

@@ -79,7 +79,7 @@ class UserController extends Controller
             ]);
 
             return back()
-                ->withErrors(['error' => 'Произошла ошибка при обновлении данных'])
+                ->with('error', 'Произошла ошибка при обновлении данных')
                 ->withInput();
         }
     }
@@ -94,7 +94,7 @@ class UserController extends Controller
         Log::info('Начало смены пароля для пользователя с ID: ' . $user->id);
 
         try {
-            DB::transaction(function () use ($validatedData) {
+            DB::transaction(function () use ($validatedData, $user) {
                 $this->securityService->changePassword($user, $validatedData['new_password']);
             });
 
@@ -108,7 +108,7 @@ class UserController extends Controller
 
             Log::error('Ошибка при смене пароля для пользователя с ID: ' . $user->id . '. Ошибка: ' . $e->getMessage());
             return back()
-                ->withErrors(['password' => 'Не удалось изменить пароль. Пожалуйста, попробуйте снова.']);
+                ->with('error', 'Не удалось изменить пароль. Пожалуйста, попробуйте снова.');
         }
     }
 
@@ -131,7 +131,7 @@ class UserController extends Controller
 
             Log::error('Ошибка при удалении аккаунта пользователя с ID: ' . Auth::id() . '. Ошибка: ' . $e->getMessage());
 
-            return back()->withErrors(['error' => 'Не удалось удалить аккаунт. Пожалуйста, попробуйте снова.']);
+            return back()->with('error', 'Не удалось удалить аккаунт. Пожалуйста, попробуйте снова.');
         }
     }
 
@@ -194,7 +194,8 @@ class UserController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return redirect()->route('user.show', $user->id)->withErrors(['error' => 'Произошла ошибка при отправке письма. Попробуйте еще раз!']);
+            return redirect()->route('user.show', $user->id)
+                ->with('error', 'Произошла ошибка при отправке письма. Попробуйте еще раз!');
         }
     }
 
@@ -207,7 +208,7 @@ class UserController extends Controller
         Log::info('Начало удаление компании у пользователя с ID: ' . $user->id);
 
         try {
-            DB::transaction(function () {
+            DB::transaction(function ()  use ($user) {
                 $this->companyService->removeCompany($user);
             });
 
@@ -216,7 +217,8 @@ class UserController extends Controller
             return redirect()->route('profile', $user->id)->with('success', 'Компания успешно удалена!');
         } catch (\Exception $e) {
             Log::error('Ошибка при удалении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
-            return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при удалении компании! Попробуйте еще раз!']);
+            return redirect()->route('profile', $user->id)
+                ->with('error', 'Ошибка при удалении компании! Попробуйте еще раз!');
         }
     }
 
@@ -240,7 +242,8 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error('Ошибка при добавлении компании у пользователя с ID ' . $user->id . ': ' . $e->getMessage());
 
-            return redirect()->route('profile', $user->id)->withErrors(['error' => 'Ошибка при добавлении компании! Попробуйте еще раз!']);
+            return redirect()->route('profile', $user->id)
+                ->with('error', 'Ошибка при добавлении компании! Попробуйте еще раз!');
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services\Company;
 use App\Models\City;
 use App\Models\Company;
 use App\Models\Tag;
+use App\Services\Common\FileService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -13,6 +14,13 @@ use Illuminate\Support\Str;
 
 class CompanyService
 {
+    protected FileService $fileService;
+
+    public function __construct()
+    {
+        $this->fileService = new FileService();
+    }
+
     public function getPopularCompanies(): Collection
     {
         return Company::with('cities')->withCount('vacancies')
@@ -49,7 +57,7 @@ class CompanyService
             return [
                 'id' => $tag->id,
                 'name' => $tag->name,
-                'active' => in_array($tag->id, session()->get('tags_vacancy', []))
+                'active' => in_array($tag->id, old('tags_vacancy') ?? [])
             ];
         });
 
@@ -57,7 +65,7 @@ class CompanyService
             return [
                 'id' => $city->id,
                 'name' => $city->name,
-                'active' => $city->id == session()->get('city_id_vacancy')
+                'active' => $city->id == old('city_id_vacancy')
             ];
         });
 
@@ -76,12 +84,12 @@ class CompanyService
         $company->cities()->sync($data['cities']);
 
         if (isset($data['delete_photo']) && $data['delete_photo'] == 'on') {
-            $this->deletePhoto($company->photo);
+            $this->fileService->deletePhoto($company->photo);
             $company->photo = null;
         }
 
         if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
-            $path = $this->uploadPhoto($company, $data['photo']);
+            $path = $this->fileService->uploadPhoto($company, $data['photo']);
             if ($path) {
                 $data['photo'] = $path;
             } else {
@@ -103,22 +111,6 @@ class CompanyService
             $cityIds[] = $city->id;
         }
         return $cityIds;
-    }
-
-    protected function uploadPhoto(Company $company, UploadedFile $newPhoto): string|bool
-    {
-        if ($company->photo) {
-            $this->deletePhoto($company->photo);
-        }
-
-        return $newPhoto->store('company_photos', 'public');
-    }
-
-    protected function deletePhoto(string $path): void
-    {
-        if (Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
-        }
     }
 
     public function generateSecretCode(Company $company, int $length = 10): void

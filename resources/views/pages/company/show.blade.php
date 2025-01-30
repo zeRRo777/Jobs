@@ -6,6 +6,10 @@
     <x-success>{{ session('success') }}</x-success>
     @endif
 
+    @if (session('error'))
+    <x-error>{{ session('error') }}</x-error>
+    @endif
+
     <div x-data="{
         editing: @js($errors->hasAny(['name_company', 'company_id_company', 'description_company', 'new_cities_company', 'cities_company', 'photo_company', 'delete_photo_company', 'error_company'])),
         add_vacancy: @js($errors->hasAny(['title_vacancy', 'description_vacancy', 'new_city_vacancy', 'company_id_vacancy', 'city_id_vacancy', 'new_tags_vacancy', 'tags_vacancy', 'salary_start_vacancy', 'salary_end_vacancy', 'error_vacancy']) 

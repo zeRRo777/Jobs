@@ -15,24 +15,28 @@
                 'label' => 'Города',
                 'name' => 'cities',
                 'data' => $cities,
+                'showError' => false
                 ])
 
                 @livewire('multiple-select', [
                 'label' => 'Профессии',
                 'name' => 'professions',
                 'data' => $professions,
+                'showError' => false
                 ])
 
                 @livewire('multiple-select', [
                 'label' => 'Теги',
                 'name' => 'tags',
                 'data' => $tags,
+                'showError' => false
                 ])
 
                 @livewire('multiple-select', [
                 'label' => 'Компании',
                 'name' => 'companies',
                 'data' => $companies,
+                'showError' => false
                 ])
 
                 <!-- Фильтр по зарплате -->

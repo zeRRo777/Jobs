@@ -10,6 +10,10 @@
     <x-warning>{{ session('warning') }}</x-warning>
     @endif
 
+    @if (session('error'))
+    <x-error>{{ session('error') }}</x-error>
+    @endif
+
     <div x-data="{ editing: @js($errors->hasAny(['name', 'email', 'profession', 'resume', 'new_cities', 'photo', 'delete_photo'])) }">
         <div class="flex justify-end mb-4">
             <x-button @click="editing = !editing" class="text-sm px-4 py-2" type="button" type_component="button">
@@ -114,6 +118,7 @@
                 'label' => 'Поиск города',
                 'name' => 'cities',
                 'data' => $cities,
+                'showError' => true
                 ])
 
                 <div x-data="{ deletePhoto: false }">

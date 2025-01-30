@@ -35,7 +35,10 @@
                 @endforeach
             </div>
         </x-form.input-group>
+        @if ($showError)
         <x-form.error field="{{ $name }}" />
+        @endif
+
     </div>
 
 </div>

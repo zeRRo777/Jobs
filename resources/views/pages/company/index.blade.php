@@ -16,12 +16,14 @@
                 'label' => 'Компании',
                 'name' => 'companies',
                 'data' => $companiesFilter,
+                'showError' => false
                 ])
 
                 @livewire('multiple-select', [
                 'label' => 'Города',
                 'name' => 'cities',
                 'data' => $cities,
+                'showError' => false
                 ])
 
                 @foreach (request()->except(['cities', 'companies']) as $key => $value)

@@ -23,16 +23,20 @@ class Exists implements ValidationRule
     {
         $ids = array_unique((array) $value);
 
-        $existingCount = DB::table($this->table)
+        $existingValues = DB::table($this->table)
             ->whereIn($this->column, $ids)
-            ->count();
+            ->distinct()
+            ->pluck($this->column)
+            ->toArray();
 
-        if ($existingCount !== count($ids)) {
-            if ($this->message) {
-                $fail($this->message);
-            } else {
-                $fail(__('validation.my_exists', ['attribute' => $attribute]));
-            }
+
+        if (count($existingValues) !== count($ids)) {
+            $missingValues = array_diff($ids, $existingValues);
+
+            $fail($this->message ?? __('validation.exists', [
+                'attribute' => $attribute,
+                'missing' => implode(', ', $missingValues)
+            ]));
         }
     }
 }

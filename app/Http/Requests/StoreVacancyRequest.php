@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Tag;
 use App\Rules\UniqueTags;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StoreVacancyRequest extends FormRequest
 {
