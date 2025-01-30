@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Tag;
 use App\Rules\UniqueTags;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class StoreVacancyRequest extends FormRequest
 {
@@ -80,7 +77,7 @@ class StoreVacancyRequest extends FormRequest
         ];
     }
 
-    public function validated($key = null, $default = null)
+    public function validated($key = null, $default = null): array
     {
         $validatedData = parent::validated($key, $default);
 

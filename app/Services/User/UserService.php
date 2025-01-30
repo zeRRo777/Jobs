@@ -17,7 +17,7 @@ class UserService
         $this->fileService = new FileService();
     }
 
-    public function updateUser(User $user, array $data)
+    public function updateUser(User $user, array $data): User
     {
         $this->handleCities($user, $data);
         $this->handlePhoto($user, $data);

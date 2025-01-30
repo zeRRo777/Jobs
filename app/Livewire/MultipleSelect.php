@@ -27,7 +27,7 @@ class MultipleSelect extends Component
     public function render(): View
     {
         $filteredData = $this->query
-            ? $this->data->filter(function ($value) {
+            ? $this->data->filter(function ($value): bool {
                 return stripos(mb_strtolower($value['name']), mb_strtolower($this->query)) !== false;
             })
             : $this->data;

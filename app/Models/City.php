@@ -27,8 +27,7 @@ class City extends Model
     {
         return $this->hasMany(Vacancy::class);
     }
-
-    static function firstOrCreateMany(array $data)
+    static function firstOrCreateMany(array $data): array
     {
         $cities = array_map('trim', $data);
         $cityIds = [];

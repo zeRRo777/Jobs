@@ -18,7 +18,7 @@ class UpdateVacancyRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'company_id' => $this->route('vacancy')->company->id,

@@ -15,7 +15,7 @@ class UserOffersRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'user_id' => $this->route('user')->id,

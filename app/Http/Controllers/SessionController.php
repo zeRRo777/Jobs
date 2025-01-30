@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SessionController extends Controller
 {
-    public function store(LoginRequest $request): ?RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
 

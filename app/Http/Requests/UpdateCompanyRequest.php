@@ -69,7 +69,7 @@ class UpdateCompanyRequest extends FormRequest
         ];
     }
 
-    public function validated($key = null, $default = null)
+    public function validated($key = null, $default = null): array
     {
         $validatedData = parent::validated($key, $default);
 
